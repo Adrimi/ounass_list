@@ -1,0 +1,58 @@
+name: OunassCaseStudy
+options:
+  bundleIdPrefix: com.adrian
+settings:
+  base:
+    SWIFT_VERSION: 5.9
+    IPHONEOS_DEPLOYMENT_TARGET: 13.0
+    TARGETED_DEVICE_FAMILY: "1,2"
+targets:
+  OunassCaseStudy:
+    type: application
+    platform: iOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: OunassCaseStudy/Sources
+    resources:
+      - path: OunassCaseStudy/Resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.adrian.ounass-case-study
+        PRODUCT_NAME: OunassCaseStudy
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Ounass
+        INFOPLIST_KEY_LSRequiresIPhoneOS: YES
+        INFOPLIST_KEY_UILaunchStoryboardName: LaunchScreen
+        INFOPLIST_KEY_UIRequiresFullScreen: NO
+        INFOPLIST_KEY_UIStatusBarStyle: UIStatusBarStyleDarkContent
+        INFOPLIST_KEY_UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+  OunassCaseStudyTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "13.0"
+    hostApplication: OunassCaseStudy
+    sources:
+      - path: OunassCaseStudyTests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.adrian.ounass-case-study.tests
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: OunassCaseStudy
+schemes:
+  OunassCaseStudy:
+    build:
+      targets:
+        OunassCaseStudy: all
+        OunassCaseStudyTests: [test]
+    test:
+      targets:
+        - name: OunassCaseStudyTests
