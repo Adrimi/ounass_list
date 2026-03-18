@@ -1,5 +1,9 @@
 import UIKit
 
+protocol CellSizeProvider {
+    func size(in bounds: CGRect) -> CGSize
+}
+
 struct CellController: Hashable {
     let id: AnyHashable
     let dataSource: UICollectionViewDataSource

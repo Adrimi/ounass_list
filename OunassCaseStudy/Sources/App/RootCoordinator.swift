@@ -20,10 +20,10 @@ final class RootCoordinator {
     }
 
     private func showProductList() {
-        let viewController = ProductListViewController(
+        let viewController = ProductListUIComposer.make(
             repository: appContainer.productListRepository,
             imageLoader: appContainer.imageLoader,
-            onProductSelection: { [weak self] product in
+            onSelection: { [weak self] product in
                 self?.showProductDetail(slug: product.slug)
             }
         )

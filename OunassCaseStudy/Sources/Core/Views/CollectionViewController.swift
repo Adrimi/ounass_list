@@ -54,6 +54,7 @@ final class CollectionViewController: UIViewController {
         view.addSubview(loadingIndicator)
         view.addSubview(errorBanner)
         collectionView.refreshControl = refreshControl
+        collectionView.register(LoadMoreCell.self, forCellWithReuseIdentifier: LoadMoreCellController.reuseIdentifier)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -95,6 +96,15 @@ extension CollectionViewController: UICollectionViewDelegate {
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         cellController(at: indexPath)?.delegate?.collectionView?(collectionView, didEndDisplaying: cell, forItemAt: indexPath)
+    }
+}
+
+extension CollectionViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let provider = cellController(at: indexPath)?.dataSource as? CellSizeProvider else {
+            return (collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize ?? .zero
+        }
+        return provider.size(in: collectionView.bounds)
     }
 }
 

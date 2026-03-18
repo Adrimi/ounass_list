@@ -50,7 +50,8 @@ struct ProductListViewAdapterTests {
         let adapter = ProductListViewAdapter(
             controller: collectionVC,
             imageLoader: MockImageLoader(),
-            selection: { _ in }
+            selection: { _ in },
+            loadMoreLoader: nil
         )
         return (adapter, collectionVC)
     }
