@@ -20,25 +20,20 @@ final class RootCoordinator {
     }
 
     private func showProductList() {
-        let viewModel = ProductListViewModel(repository: appContainer.productListRepository)
-        viewModel.onProductSelection = { [weak self] product in
-            self?.showProductDetail(slug: product.slug)
-        }
-
         let viewController = ProductListViewController(
-            viewModel: viewModel,
-            imageLoader: appContainer.imageLoader
+            repository: appContainer.productListRepository,
+            imageLoader: appContainer.imageLoader,
+            onProductSelection: { [weak self] product in
+                self?.showProductDetail(slug: product.slug)
+            }
         )
         navigationController.setViewControllers([viewController], animated: false)
     }
 
     private func showProductDetail(slug: String) {
-        let viewModel = ProductDetailViewModel(
-            initialSlug: slug,
-            repository: appContainer.productDetailRepository
-        )
         let viewController = ProductDetailViewController(
-            viewModel: viewModel,
+            slug: slug,
+            repository: appContainer.productDetailRepository,
             imageLoader: appContainer.imageLoader
         )
         navigationController.pushViewController(viewController, animated: true)

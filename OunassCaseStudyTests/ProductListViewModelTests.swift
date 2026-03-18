@@ -1,95 +1,65 @@
 import Testing
+import UIKit
 @testable import OunassCaseStudy
 
 @MainActor
-struct ProductListViewModelTests {
-    @Test func testInitialLoadPublishesProducts() async {
-        let service = MockProductListRepository()
-        service.firstPageResult = .success(.firstPage)
-        let viewModel = ProductListViewModel(repository: service)
-        var lastState: ProductListViewState?
+struct ProductListViewAdapterTests {
+    @Test func testDisplayAccumulatesProducts() {
+        let (adapter, _) = makeAdapter()
 
-        viewModel.onStateChange = { lastState = $0 }
-        viewModel.loadInitialIfNeeded()
-        await Task.yield()
+        adapter.display(.firstPage)
+        #expect(adapter.productCount == 2)
 
-        #expect(lastState?.products.count == 2)
-        #expect(service.fetchFirstPageCount == 1)
+        adapter.display(.secondPage)
+        #expect(adapter.productCount == 4)
     }
 
-    @Test func testLoadNextPageAppendsAndPreventsDuplicateRequest() async {
-        let service = MockProductListRepository()
-        service.firstPageResult = .success(.firstPage)
-        service.nextPageResult = .success(.secondPage)
-        let viewModel = ProductListViewModel(repository: service)
+    @Test func testDisplayDeduplicatesProducts() {
+        let (adapter, _) = makeAdapter()
 
-        viewModel.loadInitialIfNeeded()
-        await Task.yield()
-        viewModel.loadNextPageIfNeeded(currentItemID: ProductSummary.sample(id: "1").id)
-        viewModel.loadNextPageIfNeeded(currentItemID: ProductSummary.sample(id: "1").id)
-        await Task.yield()
-
-        #expect(service.fetchPageRequests == ["/next"])
+        adapter.display(.firstPage)
+        adapter.display(.firstPage)
+        #expect(adapter.productCount == 2)
     }
 
-    @Test func testRefreshResetsProductsAndPagination() async {
-        let service = MockProductListRepository()
-        service.firstPageResult = .success(.firstPage)
-        service.nextPageResult = .success(.secondPage)
-        service.refreshResult = .success(.refreshPage)
-        let viewModel = ProductListViewModel(repository: service)
-        var lastState: ProductListViewState?
+    @Test func testResetClearsState() {
+        let (adapter, _) = makeAdapter()
 
-        viewModel.onStateChange = { lastState = $0 }
-        viewModel.loadInitialIfNeeded()
-        await Task.yield()
-        viewModel.loadNextPageIfNeeded(currentItemID: ProductSummary.sample(id: "1").id)
-        await Task.yield()
-        viewModel.refresh()
-        await Task.yield()
+        adapter.display(.firstPage)
+        adapter.reset()
+        adapter.display(.refreshPage)
 
-        #expect(lastState?.products.map(\.id) == ["r1"])
+        #expect(adapter.productCount == 1)
+        #expect(adapter.currentPagination?.nextPagePath == nil)
     }
 
-    @Test func testTerminalPageDoesNotTriggerAnotherRequest() async {
-        let service = MockProductListRepository()
-        service.firstPageResult = .success(.terminalPage)
-        let viewModel = ProductListViewModel(repository: service)
+    @Test func testPaginationInfoIsUpdated() {
+        let (adapter, _) = makeAdapter()
 
-        viewModel.loadInitialIfNeeded()
-        await Task.yield()
-        viewModel.loadNextPageIfNeeded(currentItemID: ProductSummary.sample(id: "terminal").id)
-        await Task.yield()
+        adapter.display(.firstPage)
+        #expect(adapter.currentPagination?.nextPagePath == "/next")
 
-        #expect(service.fetchPageRequests.isEmpty)
+        adapter.display(.terminalPage)
+        #expect(adapter.currentPagination?.nextPagePath == nil)
+    }
+
+    private func makeAdapter() -> (ProductListViewAdapter, CollectionViewController) {
+        let collectionVC = CollectionViewController(layout: UICollectionViewFlowLayout())
+        collectionVC.loadViewIfNeeded()
+        collectionVC.collectionView.register(ProductListCell.self, forCellWithReuseIdentifier: ProductListCell.reuseIdentifier)
+        let adapter = ProductListViewAdapter(
+            controller: collectionVC,
+            imageLoader: MockImageLoader(),
+            selection: { _ in }
+        )
+        return (adapter, collectionVC)
     }
 }
 
-@MainActor
-private class MockProductListRepository: ProductListRepositoryProtocol {
-    var firstPageResult: Result<ProductListPage, Error> = .failure(MockError.notConfigured)
-    var nextPageResult: Result<ProductListPage, Error> = .failure(MockError.notConfigured)
-    var refreshResult: Result<ProductListPage, Error> = .failure(MockError.notConfigured)
-    var fetchFirstPageCount = 0
-    var fetchPageRequests: [String] = []
-
-    func fetchFirstPage() async throws -> ProductListPage {
-        fetchFirstPageCount += 1
-        return try firstPageResult.get()
+private class MockImageLoader: ImageLoader {
+    func loadImage(from url: URL) async throws -> UIImage {
+        .make(withColor: .red)
     }
-
-    func fetchPage(path: String) async throws -> ProductListPage {
-        fetchPageRequests.append(path)
-        return try nextPageResult.get()
-    }
-
-    func refresh() async throws -> ProductListPage {
-        try refreshResult.get()
-    }
-}
-
-private enum MockError: Error {
-    case notConfigured
 }
 
 private extension ProductListPage {

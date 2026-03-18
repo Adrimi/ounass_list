@@ -1,6 +1,8 @@
 import UIKit
 
 extension UIColor {
+    static let appBackground = UIColor(red: 0.98, green: 0.96, blue: 0.94, alpha: 1)
+
     convenience init?(hex: String?) {
         guard
             let hex,

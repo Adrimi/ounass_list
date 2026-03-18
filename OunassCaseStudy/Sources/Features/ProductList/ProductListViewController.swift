@@ -1,32 +1,25 @@
 import UIKit
 
 final class ProductListViewController: UIViewController {
-    private enum Section {
-        case products
-    }
-
-    private let viewModel: ProductListViewModel
+    private let repository: ProductListRepositoryProtocol
     private let imageLoader: ImageLoader
-    private let collectionView: UICollectionView
-    private let refreshControl = UIRefreshControl()
-    private let loadingIndicator = UIActivityIndicatorView(style: .large)
+    private let onProductSelection: ((ProductSummary) -> Void)?
+
+    private var collectionVC: CollectionViewController!
+    private var viewAdapter: ProductListViewAdapter!
+    private var initialLoadAdapter: LoadResourcePresentationAdapter<ProductListPage, ProductListViewAdapter>!
     private let paginationIndicator = UIActivityIndicatorView(style: .medium)
-    private let placeholderView = ErrorPlaceholderView()
-    private var dataSource: UICollectionViewDiffableDataSource<Section, String>!
-    private var productsByID: [String: ProductSummary] = [:]
-    private var orderedProductIDs: [String] = []
-    private var prefetchTasks: [IndexPath: Task<Void, Never>] = [:]
+    private var isLoadingMore = false
+    private var requestedPagePaths = Set<String>()
 
-    init(viewModel: ProductListViewModel, imageLoader: ImageLoader) {
-        self.viewModel = viewModel
+    init(
+        repository: ProductListRepositoryProtocol,
+        imageLoader: ImageLoader,
+        onProductSelection: ((ProductSummary) -> Void)?
+    ) {
+        self.repository = repository
         self.imageLoader = imageLoader
-
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 16
-        layout.minimumLineSpacing = 24
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 40, right: 20)
-        self.collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-
+        self.onProductSelection = onProductSelection
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,181 +29,178 @@ final class ProductListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureView()
-        configureCollectionView()
-        configureDataSource()
-        bindViewModel()
-        viewModel.loadInitialIfNeeded()
+        title = ProductListPresenter.title
+        view.backgroundColor = .appBackground
+        setupCollectionViewController()
+        setupPaginationIndicator()
+        setupInitialLoad()
+        initialLoadAdapter.loadResource()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            let columns: CGFloat = traitCollection.horizontalSizeClass == .compact ? 2 : 3
-            let spacing = layout.minimumInteritemSpacing * (columns - 1)
-            let insets = layout.sectionInset.left + layout.sectionInset.right
-            let width = collectionView.bounds.width - spacing - insets
-            let itemWidth = floor(width / columns)
-            layout.itemSize = CGSize(width: itemWidth, height: itemWidth * 1.92)
-        }
+        updateFlowLayoutItemSize()
     }
 
-    private func configureView() {
-        title = "Clothing"
-        view.backgroundColor = .appBackground
+    private func setupCollectionViewController() {
+        let layout = makeFlowLayout()
+        collectionVC = CollectionViewController(layout: layout)
 
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .clear
-
-        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
-        paginationIndicator.translatesAutoresizingMaskIntoConstraints = false
-        placeholderView.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(collectionView)
-        view.addSubview(loadingIndicator)
-        view.addSubview(placeholderView)
-        view.addSubview(paginationIndicator)
-
+        addChild(collectionVC)
+        collectionVC.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionVC.view)
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            collectionVC.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionVC.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionVC.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionVC.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+        collectionVC.didMove(toParent: self)
+
+        collectionVC.collectionView.register(ProductListCell.self, forCellWithReuseIdentifier: ProductListCell.reuseIdentifier)
+
+        viewAdapter = ProductListViewAdapter(
+            controller: collectionVC,
+            imageLoader: imageLoader,
+            selection: { [weak self] product in self?.onProductSelection?(product) }
+        )
+
+        collectionVC.onRefresh = { [weak self] in self?.handleRefresh() }
+        collectionVC.onWillDisplayCell = { [weak self] indexPath in self?.loadNextPageIfNeeded(at: indexPath) }
+    }
+
+    private func setupPaginationIndicator() {
+        paginationIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(paginationIndicator)
+        NSLayoutConstraint.activate([
             paginationIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            paginationIndicator.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
-            placeholderView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            placeholderView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            placeholderView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 32),
-            placeholderView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -32)
+            paginationIndicator.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12)
         ])
     }
 
-    private func configureCollectionView() {
-        collectionView.register(ProductListCell.self, forCellWithReuseIdentifier: ProductListCell.reuseIdentifier)
-        collectionView.delegate = self
-        collectionView.prefetchDataSource = self
-
-        refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
-        collectionView.refreshControl = refreshControl
-    }
-
-    private func configureDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, String>(collectionView: collectionView) { [weak self] collectionView, indexPath, identifier in
-            guard
-                let self,
-                let cell = collectionView.dequeueReusableCell(
-                    withReuseIdentifier: ProductListCell.reuseIdentifier,
-                    for: indexPath
-                ) as? ProductListCell,
-                let product = self.productsByID[identifier]
-            else {
-                return UICollectionViewCell()
+    private func setupInitialLoad() {
+        initialLoadAdapter = LoadResourcePresentationAdapter(
+            loader: { [weak self] in
+                guard let self else { throw CancellationError() }
+                return try await self.repository.fetchFirstPage()
             }
+        )
+        let presenter = LoadResourcePresenter(
+            resourceView: viewAdapter,
+            loadingView: WeakRefVirtualProxy(collectionVC),
+            errorView: WeakRefVirtualProxy(collectionVC)
+        )
+        initialLoadAdapter.presenter = presenter
+    }
 
-            cell.configure(with: product, imageLoader: self.imageLoader)
-            return cell
+    private func handleRefresh() {
+        viewAdapter.reset()
+        requestedPagePaths.removeAll()
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            self.collectionVC.display(ResourceErrorViewModel.noError)
+            do {
+                let page = try await self.repository.refresh()
+                self.viewAdapter.display(page)
+            } catch {
+                self.collectionVC.display(ResourceErrorViewModel(message: error.localizedDescription))
+            }
+            self.collectionVC.display(ResourceLoadingViewModel(isLoading: false))
         }
     }
 
-    private func bindViewModel() {
-        viewModel.onStateChange = { [weak self] state in
-            self?.render(state: state)
-        }
+    private func loadNextPageIfNeeded(at indexPath: IndexPath) {
+        guard
+            !isLoadingMore,
+            let nextPagePath = viewAdapter.currentPagination?.nextPagePath,
+            !requestedPagePaths.contains(nextPagePath),
+            indexPath.item >= max(viewAdapter.productCount - 6, 0)
+        else { return }
 
-        placeholderView.onAction = { [weak self] in
-            self?.viewModel.loadInitialIfNeeded()
+        requestedPagePaths.insert(nextPagePath)
+        isLoadingMore = true
+        paginationIndicator.startAnimating()
+
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer {
+                self.isLoadingMore = false
+                self.paginationIndicator.stopAnimating()
+            }
+            do {
+                let page = try await self.repository.fetchPage(path: nextPagePath)
+                self.viewAdapter.display(page)
+            } catch {
+                self.requestedPagePaths.remove(nextPagePath)
+            }
         }
     }
 
-    private func render(state: ProductListViewState) {
-        productsByID = Dictionary(uniqueKeysWithValues: state.products.map { ($0.id, $0) })
-        orderedProductIDs = state.products.map(\.id)
-        applySnapshot(with: orderedProductIDs)
+    private func makeFlowLayout() -> UICollectionViewFlowLayout {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumInteritemSpacing = 16
+        layout.minimumLineSpacing = 24
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 40, right: 20)
+        return layout
+    }
 
-        if state.isInitialLoading && state.products.isEmpty {
-            loadingIndicator.startAnimating()
-        } else {
-            loadingIndicator.stopAnimating()
-        }
+    private func updateFlowLayoutItemSize() {
+        guard let layout = collectionVC?.collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        let columns: CGFloat = traitCollection.horizontalSizeClass == .compact ? 2 : 3
+        let spacing = layout.minimumInteritemSpacing * (columns - 1)
+        let insets = layout.sectionInset.left + layout.sectionInset.right
+        let width = view.bounds.width - spacing - insets
+        let itemWidth = floor(width / columns)
+        layout.itemSize = CGSize(width: itemWidth, height: itemWidth * 1.92)
+    }
+}
 
-        if state.isRefreshing == false {
-            refreshControl.endRefreshing()
-        }
+// MARK: - ProductListViewAdapter
 
-        if state.isLoadingNextPage {
-            paginationIndicator.startAnimating()
-        } else {
-            paginationIndicator.stopAnimating()
-        }
+final class ProductListViewAdapter: ResourceView {
+    typealias ResourceViewModel = ProductListPage
 
-        if state.products.isEmpty, let errorMessage = state.errorMessage, state.isInitialLoading == false {
-            placeholderView.render(
-                title: "Couldn’t load products",
-                message: errorMessage,
-                actionTitle: "Try Again"
+    private weak var controller: CollectionViewController?
+    private let imageLoader: ImageLoader
+    private let selection: (ProductSummary) -> Void
+
+    private var products: [ProductSummary] = []
+    private var existingControllers: [String: ProductListCellController] = [:]
+    private(set) var currentPagination: PaginationInfo?
+
+    var productCount: Int { products.count }
+
+    init(controller: CollectionViewController, imageLoader: ImageLoader, selection: @escaping (ProductSummary) -> Void) {
+        self.controller = controller
+        self.imageLoader = imageLoader
+        self.selection = selection
+    }
+
+    func reset() {
+        products = []
+        existingControllers = [:]
+        currentPagination = nil
+    }
+
+    func display(_ page: ProductListPage) {
+        currentPagination = page.pagination
+
+        let existingIDs = Set(products.map(\.id))
+        let newProducts = page.products.filter { !existingIDs.contains($0.id) }
+        products.append(contentsOf: newProducts)
+
+        let cellControllers = products.map { product -> CellController in
+            let existing = existingControllers[product.id]
+            let cellController = existing ?? ProductListCellController(
+                product: product,
+                imageLoader: imageLoader,
+                selection: { [weak self] in self?.selection(product) }
             )
-            placeholderView.isHidden = false
-        } else if state.products.isEmpty, state.isInitialLoading == false {
-            placeholderView.render(
-                title: "No products found",
-                message: "Pull to refresh or try again later.",
-                actionTitle: "Refresh"
-            )
-            placeholderView.isHidden = false
-        } else {
-            placeholderView.isHidden = true
+            existingControllers[product.id] = cellController
+            return CellController(id: product.id, cellController)
         }
-    }
 
-    private func applySnapshot(with identifiers: [String]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, String>()
-        snapshot.appendSections([.products])
-        snapshot.appendItems(identifiers)
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-
-    @objc private func handleRefresh() {
-        viewModel.refresh()
+        controller?.display(cellControllers)
     }
 }
-
-extension ProductListViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        viewModel.selectProduct(at: indexPath.item)
-    }
-
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard orderedProductIDs.indices.contains(indexPath.item) else {
-            return
-        }
-
-        viewModel.loadNextPageIfNeeded(currentItemID: orderedProductIDs[indexPath.item])
-    }
-}
-
-extension ProductListViewController: UICollectionViewDataSourcePrefetching {
-    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { indexPath in
-            guard
-                orderedProductIDs.indices.contains(indexPath.item),
-                let product = productsByID[orderedProductIDs[indexPath.item]],
-                let url = product.thumbnailURL
-            else {
-                return
-            }
-
-            prefetchTasks[indexPath] = Task {
-                _ = try? await imageLoader.loadImage(from: url)
-            }
-        }
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { indexPath in
-            prefetchTasks.removeValue(forKey: indexPath)?.cancel()
-        }
-    }
-}
-
