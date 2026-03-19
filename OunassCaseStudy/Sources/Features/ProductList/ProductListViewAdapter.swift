@@ -1,82 +1,65 @@
 import UIKit
 
 final class ProductListViewAdapter: ResourceView {
-    typealias ResourceViewModel = ProductListPage
+    typealias ResourceViewModel = Paginated<ProductSummary>
+    private typealias LoadMorePresentationAdapter = LoadResourcePresentationAdapter<Paginated<ProductSummary>, ProductListViewAdapter>
 
     private weak var controller: CollectionViewController?
     private let imageLoader: ImageLoader
     private let selection: (ProductSummary) -> Void
-    private let loadMoreLoader: ((String) async throws -> ProductListPage)?
-
-    private var existingControllers: [String: ProductListCellController]
-    private var accumulatedProducts: [ProductSummary]
-
-    private(set) var currentPagination: PaginationInfo?
-    var productCount: Int { accumulatedProducts.count }
+    private let currentProducts: [ProductSummary: CellController]
 
     init(
-        existingControllers: [String: ProductListCellController] = [:],
-        accumulatedProducts: [ProductSummary] = [],
+        currentProducts: [ProductSummary: CellController] = [:],
         controller: CollectionViewController,
         imageLoader: ImageLoader,
-        selection: @escaping (ProductSummary) -> Void,
-        loadMoreLoader: ((String) async throws -> ProductListPage)?
+        selection: @escaping (ProductSummary) -> Void
     ) {
-        self.existingControllers = existingControllers
-        self.accumulatedProducts = accumulatedProducts
+        self.currentProducts = currentProducts
         self.controller = controller
         self.imageLoader = imageLoader
         self.selection = selection
-        self.loadMoreLoader = loadMoreLoader
     }
 
-    func reset() {
-        existingControllers = [:]
-        accumulatedProducts = []
-        currentPagination = nil
-    }
+    func display(_ page: Paginated<ProductSummary>) {
+        guard let controller else { return }
 
-    func display(_ page: ProductListPage) {
-        currentPagination = page.pagination
-        let existingIDs = Set(accumulatedProducts.map(\.id))
-        let newProducts = page.products.filter { !existingIDs.contains($0.id) }
-        accumulatedProducts.append(contentsOf: newProducts)
+        var currentProducts = self.currentProducts
+        let productCells: [CellController] = page.items.map { product in
+            if let controller = currentProducts[product] {
+                return controller
+            }
 
-        let productCells: [CellController] = accumulatedProducts.map { product in
-            let cc = existingControllers[product.id] ?? ProductListCellController(
+            let view = ProductListCellController(
                 product: product,
                 imageLoader: imageLoader,
-                selection: { [weak self] in self?.selection(product) }
+                selection: { [selection] in selection(product) }
             )
-            existingControllers[product.id] = cc
-            return CellController(id: product.id, cc)
+
+            let controller = CellController(id: product, view)
+            currentProducts[product] = controller
+            return controller
         }
 
-        guard let nextPath = page.pagination.nextPagePath, let controller else {
-            controller?.display(productCells)
+        guard let loadMore = page.loadMore else {
+            controller.display(productCells)
             return
         }
 
-        let loadMoreAdapter = LoadResourcePresentationAdapter<ProductListPage, ProductListViewAdapter>(
-            loader: { [loadMoreLoader] in
-                guard let loadMoreLoader else { throw CancellationError() }
-                return try await loadMoreLoader(nextPath)
-            }
-        )
-        let loadMoreCell = LoadMoreCellController(callback: loadMoreAdapter.loadResource)
+        let loadMoreAdapter = LoadMorePresentationAdapter(loader: loadMore)
+        let loadMoreCellController = LoadMoreCellController(callback: loadMoreAdapter.loadResource)
+
         loadMoreAdapter.presenter = LoadResourcePresenter(
             resourceView: ProductListViewAdapter(
-                existingControllers: existingControllers,
-                accumulatedProducts: accumulatedProducts,
+                currentProducts: currentProducts,
                 controller: controller,
                 imageLoader: imageLoader,
-                selection: selection,
-                loadMoreLoader: loadMoreLoader
+                selection: selection
             ),
-            loadingView: WeakRefVirtualProxy(loadMoreCell),
-            errorView: WeakRefVirtualProxy(loadMoreCell)
+            loadingView: WeakRefVirtualProxy(loadMoreCellController),
+            errorView: WeakRefVirtualProxy(loadMoreCellController)
         )
 
-        controller.display(productCells + [CellController(id: UUID(), loadMoreCell)])
+        controller.display(productCells, [CellController(id: UUID(), loadMoreCellController)])
     }
 }

@@ -15,8 +15,4 @@ final class ProductListRepository: ProductListRepositoryProtocol {
         let response: ProductListResponse = try await apiClient.get(path: path)
         return response.toDomain()
     }
-
-    func refresh() async throws -> ProductListPage {
-        try await fetchFirstPage()
-    }
 }
