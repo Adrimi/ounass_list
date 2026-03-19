@@ -4,44 +4,20 @@ final class OptionGroupView: UIView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = .systemFont(ofSize: 15, weight: .semibold)
-        label.textColor = UIColor(white: 0.14, alpha: 1)
+        label.font = .sans(size: 12, weight: .medium)
+        label.textColor = .primary
         return label
     }()
 
-    private lazy var scrollView: UIScrollView = {
-        let sv = UIScrollView()
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        return sv
-    }()
-
-    private lazy var stackView: UIStackView = {
-        let sv = UIStackView()
-        sv.translatesAutoresizingMaskIntoConstraints = false
-        sv.axis = .horizontal
-        sv.spacing = 12
-        sv.alignment = .fill
-        return sv
-    }()
+    private var contentView: UIView?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(titleLabel)
-        addSubview(scrollView)
-        scrollView.addSubview(stackView)
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            stackView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            stackView.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
         ])
     }
 
@@ -52,16 +28,87 @@ final class OptionGroupView: UIView {
     func render(group: ResolvedOptionGroup, onSelection: @escaping (String) -> Void) {
         titleLabel.text = group.title
 
-        stackView.arrangedSubviews.forEach { view in
-            stackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
+        contentView?.removeFromSuperview()
+        contentView = nil
+
+        let newContent: UIView
+        if group.displayStyle == .swatch {
+            newContent = buildSwatchContent(group: group, onSelection: onSelection)
+        } else {
+            newContent = buildTextGridContent(group: group, onSelection: onSelection)
         }
 
+        newContent.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(newContent)
+        NSLayoutConstraint.activate([
+            newContent.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
+            newContent.leadingAnchor.constraint(equalTo: leadingAnchor),
+            newContent.trailingAnchor.constraint(equalTo: trailingAnchor),
+            newContent.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+        contentView = newContent
+    }
+
+    private func buildSwatchContent(group: ResolvedOptionGroup, onSelection: @escaping (String) -> Void) -> UIView {
+        let scrollView = UIScrollView()
+        scrollView.showsHorizontalScrollIndicator = false
+
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 8
+        stack.alignment = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            scrollView.heightAnchor.constraint(equalToConstant: 40),
+            stack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            stack.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
+            stack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
+            stack.heightAnchor.constraint(equalTo: scrollView.frameLayoutGuide.heightAnchor)
+        ])
+
         group.values.forEach { value in
-            let button = OptionValueButton(style: group.displayStyle)
+            let button = OptionValueButton(style: .swatch)
             button.apply(resolvedValue: value)
             button.onTap = { onSelection(value.value.id) }
-            stackView.addArrangedSubview(button)
+            stack.addArrangedSubview(button)
         }
+
+        return scrollView
+    }
+
+    private func buildTextGridContent(group: ResolvedOptionGroup, onSelection: @escaping (String) -> Void) -> UIView {
+        let outerStack = UIStackView()
+        outerStack.axis = .vertical
+        outerStack.spacing = 8
+
+        let chunks = stride(from: 0, to: group.values.count, by: 4).map {
+            Array(group.values[$0..<min($0 + 4, group.values.count)])
+        }
+
+        for chunk in chunks {
+            let rowStack = UIStackView()
+            rowStack.axis = .horizontal
+            rowStack.spacing = 8
+            rowStack.distribution = .fillEqually
+
+            for value in chunk {
+                let button = OptionValueButton(style: .text)
+                button.apply(resolvedValue: value)
+                button.onTap = { onSelection(value.value.id) }
+                rowStack.addArrangedSubview(button)
+            }
+
+            let remaining = 4 - chunk.count
+            for _ in 0..<remaining {
+                rowStack.addArrangedSubview(UIView())
+            }
+
+            outerStack.addArrangedSubview(rowStack)
+        }
+
+        return outerStack
     }
 }

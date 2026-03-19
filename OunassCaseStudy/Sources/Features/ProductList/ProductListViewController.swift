@@ -4,6 +4,12 @@ final class ProductListViewController: UIViewController {
     let collectionVC: CollectionViewController
     var onRefresh: (() -> Void)?
 
+    private lazy var headerView: ProductListHeaderView = {
+        let view = ProductListHeaderView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     init() {
         collectionVC = CollectionViewController(layout: Self.makeFlowLayout())
         super.init(nibName: nil, bundle: nil)
@@ -16,8 +22,8 @@ final class ProductListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = ProductListPresenter.title
         view.backgroundColor = .appBackground
+        setupHeaderView()
         setupCollectionViewController()
         onRefresh?()
     }
@@ -27,12 +33,21 @@ final class ProductListViewController: UIViewController {
         updateFlowLayoutItemSize()
     }
 
+    private func setupHeaderView() {
+        view.addSubview(headerView)
+        NSLayoutConstraint.activate([
+            headerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+    }
+
     private func setupCollectionViewController() {
         addChild(collectionVC)
         collectionVC.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionVC.view)
         NSLayoutConstraint.activate([
-            collectionVC.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionVC.view.topAnchor.constraint(equalTo: headerView.bottomAnchor),
             collectionVC.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionVC.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionVC.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)

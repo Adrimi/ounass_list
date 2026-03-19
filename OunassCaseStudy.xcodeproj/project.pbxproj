@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0275935FF4867B61AE0D48EE /* ProductListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F5FC1F62A4BA1C76DAD791B /* ProductListHeaderView.swift */; };
 		1072DA5B58BAB942FA30B553 /* ProductListUIComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD008C52B5DF46572CB8757 /* ProductListUIComposer.swift */; };
 		11527950A1677B3E64AEDE6D /* SelectionStateResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406E44916957EE90E0F8E9D7 /* SelectionStateResolver.swift */; };
 		12FB83D846613C7A9DD52718 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847DA95581B30F252B807535 /* ErrorView.swift */; };
@@ -22,6 +23,7 @@
 		58BBFCA49A5187B25A410CE6 /* ProductDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76C621B26241355AEF561DE /* ProductDetailPresenter.swift */; };
 		5BE9B597E6C8C8C990C1B907 /* UIFont+Atelier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6956A71E853446420A97EC /* UIFont+Atelier.swift */; };
 		61E604ADAC4F41F4B1699E18 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E5CC558919744DD428EA0 /* AppContainer.swift */; };
+		695A9E77AA69385B6D269296 /* LinePageControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABB5D5AF4E0417CCC083884 /* LinePageControl.swift */; };
 		7013A08A0E3BC532665D3932 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68455571A7D84CFD76CA9458 /* RootCoordinator.swift */; };
 		719F9D992E6546A56789AEE0 /* OptionValueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA07A9CAF286734FB8F0DDC1 /* OptionValueButton.swift */; };
 		733355B840EA554C0D2827F7 /* ProductListContainerResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0685DF7484E1F22663C5CA /* ProductListContainerResponse.swift */; };
@@ -34,6 +36,7 @@
 		94C85AD0F29AF416B0F3591C /* HTTPClientError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 631BE04178F3383544877CFA /* HTTPClientError.swift */; };
 		9795D7D63AC75DA6D2AF6F14 /* ProductListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1BEB09C679D6F6905C9C186 /* ProductListViewModelTests.swift */; };
 		999729B0913099C0EA48425B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD18B659664392F822AD676 /* HTTPClient.swift */; };
+		9C29E933A26D349123363C6D /* AccordionSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2339C08C5C934E54C070B60B /* AccordionSectionView.swift */; };
 		9D197882A50E9852EAB79418 /* ProductDetailResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC299CEA7324A225B4367EC /* ProductDetailResponse.swift */; };
 		A1311F24476E5BE0F273CD8D /* ProductListRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B155BB36447BEC1C807E2C /* ProductListRepository.swift */; };
 		A45150177BEB1B5931C1A714 /* SizeOptionResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D9DA4D3E6713D222726AC7 /* SizeOptionResponse.swift */; };
@@ -85,6 +88,7 @@
 		1C672FF5AC5B59D5FC22F228 /* ProductListItemResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListItemResponse.swift; sourceTree = "<group>"; };
 		1F0E5CC558919744DD428EA0 /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
 		20CDDBA37CA6248929208DC7 /* MediaCarouselCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCarouselCell.swift; sourceTree = "<group>"; };
+		2339C08C5C934E54C070B60B /* AccordionSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccordionSectionView.swift; sourceTree = "<group>"; };
 		26EF616D40BA3C9A90A261BA /* ProductDetailRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailRepository.swift; sourceTree = "<group>"; };
 		2721E464FD25B4860C9BA513 /* ProductModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductModels.swift; sourceTree = "<group>"; };
 		36B5DAF62C6C82C70CEE5E7B /* ProductListViewAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListViewAdapter.swift; sourceTree = "<group>"; };
@@ -111,6 +115,7 @@
 		954FCC6607E916AE316008DF /* UIColor+hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+hex.swift"; sourceTree = "<group>"; };
 		96B07E6A3B058C9A0A49F6B3 /* ProductListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListViewController.swift; sourceTree = "<group>"; };
 		9BFBE5BB9F0EE45DFBB9EB84 /* OunassURLBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OunassURLBuilder.swift; sourceTree = "<group>"; };
+		9F5FC1F62A4BA1C76DAD791B /* ProductListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListHeaderView.swift; sourceTree = "<group>"; };
 		A237BDB0B22EABA317CB7F8A /* ProductSummary+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSummary+Preview.swift"; sourceTree = "<group>"; };
 		A46058688A54E0C20BB03B72 /* PaginationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationResponse.swift; sourceTree = "<group>"; };
 		ABAB3707DD9861C9DACF349B /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
@@ -121,6 +126,7 @@
 		B2D9DA4D3E6713D222726AC7 /* SizeOptionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SizeOptionResponse.swift; sourceTree = "<group>"; };
 		B483C0749EF4663DA11B2237 /* OunassCaseStudyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = OunassCaseStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6D501FFD87EEB66C400E408 /* ColorOptionResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorOptionResponse.swift; sourceTree = "<group>"; };
+		BABB5D5AF4E0417CCC083884 /* LinePageControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinePageControl.swift; sourceTree = "<group>"; };
 		BCD008C52B5DF46572CB8757 /* ProductListUIComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListUIComposer.swift; sourceTree = "<group>"; };
 		BF0685DF7484E1F22663C5CA /* ProductListContainerResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListContainerResponse.swift; sourceTree = "<group>"; };
 		C9A7F2CCF6212A000047165C /* MediaResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaResponse.swift; sourceTree = "<group>"; };
@@ -210,6 +216,7 @@
 			children = (
 				1513E29328ED82E2465D24C4 /* ProductListCell.swift */,
 				798DB0A3D91EE1625CFCBF8C /* ProductListCellController.swift */,
+				9F5FC1F62A4BA1C76DAD791B /* ProductListHeaderView.swift */,
 				647A4D41D924813242298A67 /* ProductListPresenter.swift */,
 				BCD008C52B5DF46572CB8757 /* ProductListUIComposer.swift */,
 				36B5DAF62C6C82C70CEE5E7B /* ProductListViewAdapter.swift */,
@@ -274,9 +281,11 @@
 		93732A810C30BC1B66EB58A6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				2339C08C5C934E54C070B60B /* AccordionSectionView.swift */,
 				F43FB0405D25CE2ABF6A834D /* CellController.swift */,
 				EC24B5AC12B9CA844FF2E1B0 /* CollectionViewController.swift */,
 				847DA95581B30F252B807535 /* ErrorView.swift */,
+				BABB5D5AF4E0417CCC083884 /* LinePageControl.swift */,
 				EA178ADF8389029E68D63600 /* LoadMoreCellController.swift */,
 			);
 			path = Views;
@@ -431,8 +440,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = AAD1F7D78951A40D88F75E86 /* Build configuration list for PBXProject "OunassCaseStudy" */;
 			developmentRegion = en;
@@ -458,6 +465,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C29E933A26D349123363C6D /* AccordionSectionView.swift in Sources */,
 				61E604ADAC4F41F4B1699E18 /* AppContainer.swift in Sources */,
 				403B104777EF9765751ECA76 /* AppDelegate.swift in Sources */,
 				B95CC5933A248B57581B887A /* CellController.swift in Sources */,
@@ -469,6 +477,7 @@
 				999729B0913099C0EA48425B /* HTTPClient.swift in Sources */,
 				94C85AD0F29AF416B0F3591C /* HTTPClientError.swift in Sources */,
 				A853C154E3C75A149604879E /* ImageLoader.swift in Sources */,
+				695A9E77AA69385B6D269296 /* LinePageControl.swift in Sources */,
 				1347973CF2B4574CEAF95BB2 /* LoadMoreCellController.swift in Sources */,
 				E8EC8305B2E5D19F198C905F /* LoadResourcePresentationAdapter.swift in Sources */,
 				C81033E225EC640374290879 /* LoadResourcePresenter.swift in Sources */,
@@ -490,6 +499,7 @@
 				CD0C14E8585311072ABF6BB9 /* ProductListCell.swift in Sources */,
 				FCA9B8D38CF6BE2BBEEF5412 /* ProductListCellController.swift in Sources */,
 				733355B840EA554C0D2827F7 /* ProductListContainerResponse.swift in Sources */,
+				0275935FF4867B61AE0D48EE /* ProductListHeaderView.swift in Sources */,
 				899DD2D71D6DDEE244AB59B2 /* ProductListItemResponse.swift in Sources */,
 				4777CE5368249010DC68C292 /* ProductListPresenter.swift in Sources */,
 				A1311F24476E5BE0F273CD8D /* ProductListRepository.swift in Sources */,
@@ -564,17 +574,8 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = (
-					UIInterfaceOrientationPortrait,
-					UIInterfaceOrientationLandscapeLeft,
-					UIInterfaceOrientationLandscapeRight,
-				);
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = (
-					UIInterfaceOrientationPortrait,
-					UIInterfaceOrientationPortraitUpsideDown,
-					UIInterfaceOrientationLandscapeLeft,
-					UIInterfaceOrientationLandscapeRight,
-				);
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -616,17 +617,8 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = (
-					UIInterfaceOrientationPortrait,
-					UIInterfaceOrientationLandscapeLeft,
-					UIInterfaceOrientationLandscapeRight,
-				);
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = (
-					UIInterfaceOrientationPortrait,
-					UIInterfaceOrientationPortraitUpsideDown,
-					UIInterfaceOrientationLandscapeLeft,
-					UIInterfaceOrientationLandscapeRight,
-				);
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

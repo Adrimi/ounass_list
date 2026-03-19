@@ -8,6 +8,7 @@ final class ProductDetailViewController: UIViewController {
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
         sv.translatesAutoresizingMaskIntoConstraints = false
+        sv.contentInsetAdjustmentBehavior = .automatic
         return sv
     }()
 
@@ -16,13 +17,6 @@ final class ProductDetailViewController: UIViewController {
         sv.axis = .vertical
         sv.spacing = 24
         sv.translatesAutoresizingMaskIntoConstraints = false
-        return sv
-    }()
-
-    private lazy var infoStack: UIStackView = {
-        let sv = UIStackView()
-        sv.axis = .vertical
-        sv.spacing = 8
         return sv
     }()
 
@@ -53,17 +47,14 @@ final class ProductDetailViewController: UIViewController {
 
     private let mediaCarouselView: MediaCarouselView
 
-    private lazy var designerLabel: UILabel = {
+    private lazy var brandLabel: UILabel = {
         let label = UILabel()
-        label.font = .sans(size: 11, weight: .semibold)
-        label.textColor = .primaryDim
-        label.numberOfLines = 0
         return label
     }()
 
     private lazy var productNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .serif(size: 28, weight: .light)
+        label.font = .serif(size: 32, weight: .light)
         label.textColor = .onSurface
         label.numberOfLines = 0
         return label
@@ -71,57 +62,146 @@ final class ProductDetailViewController: UIViewController {
 
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
-        label.font = .sans(size: 20, weight: .medium)
-        label.textColor = .secondary
+        label.font = .sans(size: 24)
+        label.textColor = .onSurface
         return label
     }()
 
     private lazy var amberPointsLabel: UILabel = {
         let label = UILabel()
-        label.font = .sans(size: 14, weight: .medium)
+        label.font = .sans(size: 12)
         label.textColor = .secondary
         label.numberOfLines = 0
         return label
     }()
 
-    private lazy var productCodeLabel: UILabel = {
-        let label = UILabel()
-        label.font = .sans(size: 13)
-        label.textColor = .primaryDim
-        return label
-    }()
+    private lazy var priceAmberStack: UIStackView = {
+        let separatorView = UIView()
+        separatorView.backgroundColor = .surfaceVariant
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
 
-    private lazy var addToBagButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitleColor(.white, for: .normal)
-        button.setTitle("Add to Bag", for: .normal)
-        button.titleLabel?.font = .sans(size: 17, weight: .semibold)
-        button.layer.cornerRadius = 0
-        return button
-    }()
+        let starIcon = UIImageView(image: UIImage(systemName: "star.fill"))
+        starIcon.tintColor = .secondary
+        starIcon.contentMode = .scaleAspectFit
+        starIcon.translatesAutoresizingMaskIntoConstraints = false
 
-    private lazy var addToBagGradient: CAGradientLayer = {
-        let gradient = CAGradientLayer()
-        gradient.colors = [UIColor.primary.cgColor, UIColor.primaryDim.cgColor]
-        gradient.startPoint = CGPoint(x: 0, y: 1)
-        gradient.endPoint = CGPoint(x: 1, y: 0)
-        return gradient
-    }()
+        NSLayoutConstraint.activate([
+            separatorView.widthAnchor.constraint(equalToConstant: 1),
+            separatorView.heightAnchor.constraint(equalToConstant: 16),
+            starIcon.widthAnchor.constraint(equalToConstant: 12),
+            starIcon.heightAnchor.constraint(equalToConstant: 12)
+        ])
 
-    private lazy var descriptionHeaderLabel: UILabel = {
-        let label = UILabel()
-        label.font = .serif(size: 16)
-        label.textColor = .onSurface
-        label.text = "Editor's advice"
-        return label
+        let amberGroup = UIStackView(arrangedSubviews: [starIcon, amberPointsLabel])
+        amberGroup.axis = .horizontal
+        amberGroup.spacing = 4
+        amberGroup.alignment = .center
+
+        let sv = UIStackView(arrangedSubviews: [priceLabel, separatorView, amberGroup])
+        sv.axis = .horizontal
+        sv.spacing = 12
+        sv.alignment = .center
+        return sv
     }()
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
         label.font = .sans(size: 15)
-        label.textColor = .primary
-        label.numberOfLines = 0
+        label.textColor = .onSurface
+        label.numberOfLines = 3
         return label
+    }()
+
+    private lazy var readMoreButton: UIButton = {
+        let button = UIButton(type: .system)
+        let attrs: [NSAttributedString.Key: Any] = [
+            .kern: CGFloat(1.5),
+            .font: UIFont.sans(size: 10, weight: .medium),
+            .foregroundColor: UIColor.primary,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+        button.setAttributedTitle(NSAttributedString(string: "READ MORE", attributes: attrs), for: .normal)
+        button.contentHorizontalAlignment = .leading
+        return button
+    }()
+
+    private lazy var addToBagButton: UIButton = {
+        let button = UIButton(type: .system)
+        let attrs: [NSAttributedString.Key: Any] = [
+            .kern: CGFloat(2.6),
+            .font: UIFont.sans(size: 13, weight: .medium),
+            .foregroundColor: UIColor.white
+        ]
+        button.setAttributedTitle(NSAttributedString(string: "ADD TO BAG", attributes: attrs), for: .normal)
+        button.layer.cornerRadius = 0
+        button.backgroundColor = .primary
+        return button
+    }()
+
+    private lazy var wishlistShareStack: UIStackView = {
+        let heartIcon = UIImageView(image: UIImage(systemName: "heart"))
+        heartIcon.tintColor = .primaryDim
+        heartIcon.contentMode = .scaleAspectFit
+        heartIcon.translatesAutoresizingMaskIntoConstraints = false
+
+        let shareIcon = UIImageView(image: UIImage(systemName: "square.and.arrow.up"))
+        shareIcon.tintColor = .primaryDim
+        shareIcon.contentMode = .scaleAspectFit
+        shareIcon.translatesAutoresizingMaskIntoConstraints = false
+
+        let divider = UIView()
+        divider.backgroundColor = .surfaceVariant
+        divider.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            heartIcon.widthAnchor.constraint(equalToConstant: 16),
+            heartIcon.heightAnchor.constraint(equalToConstant: 16),
+            shareIcon.widthAnchor.constraint(equalToConstant: 16),
+            shareIcon.heightAnchor.constraint(equalToConstant: 16),
+            divider.widthAnchor.constraint(equalToConstant: 1),
+            divider.heightAnchor.constraint(equalToConstant: 16)
+        ])
+
+        let wishlistGroup = UIStackView(arrangedSubviews: [heartIcon, makeWishlistLabel("WISHLIST")])
+        wishlistGroup.axis = .horizontal
+        wishlistGroup.spacing = 6
+        wishlistGroup.alignment = .center
+
+        let shareGroup = UIStackView(arrangedSubviews: [shareIcon, makeWishlistLabel("SHARE")])
+        shareGroup.axis = .horizontal
+        shareGroup.spacing = 6
+        shareGroup.alignment = .center
+
+        let sv = UIStackView(arrangedSubviews: [wishlistGroup, divider, shareGroup])
+        sv.axis = .horizontal
+        sv.spacing = 16
+        sv.alignment = .center
+        sv.distribution = .equalCentering
+        return sv
+    }()
+
+    private lazy var sizeAccordion: AccordionSectionView = {
+        let v = AccordionSectionView()
+        v.setTitle("SIZE & FIT")
+        return v
+    }()
+
+    private lazy var compositionAccordion: AccordionSectionView = {
+        let v = AccordionSectionView()
+        v.setTitle("COMPOSITION & CARE")
+        return v
+    }()
+
+    private lazy var shippingAccordion: AccordionSectionView = {
+        let v = AccordionSectionView()
+        v.setTitle("SHIPPING & RETURNS")
+        return v
+    }()
+
+    private lazy var editorsAccordion: AccordionSectionView = {
+        let v = AccordionSectionView()
+        v.setTitle("EDITOR'S ADVICE")
+        return v
     }()
 
     private var optionGroupViews: [OptionGroupView] = []
@@ -148,10 +228,12 @@ final class ProductDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .appBackground
-        addToBagButton.layer.insertSublayer(addToBagGradient, at: 0)
-        [designerLabel, productNameLabel, priceLabel, amberPointsLabel, productCodeLabel].forEach(infoStack.addArrangedSubview)
-        [mediaCarouselView, infoStack, optionsStack, addToBagButton, descriptionHeaderLabel, descriptionLabel].forEach(contentStack.addArrangedSubview)
+        setupContentStack()
+        let linePageControl = mediaCarouselView.linePageControl
+        linePageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
+        scrollView.addSubview(mediaCarouselView)
+        scrollView.addSubview(linePageControl)
         scrollView.addSubview(contentStack)
         view.addSubview(loadingIndicator)
         view.addSubview(errorBanner)
@@ -160,29 +242,75 @@ final class ProductDetailViewController: UIViewController {
         loadAdapter.loadResource()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        addToBagGradient.frame = addToBagButton.bounds
+    private func setupContentStack() {
+        [
+            brandLabel,
+            productNameLabel,
+            priceAmberStack,
+            descriptionLabel,
+            readMoreButton,
+            optionsStack,
+            addToBagButton,
+            wishlistShareStack,
+            sizeAccordion,
+            compositionAccordion,
+            shippingAccordion,
+            editorsAccordion
+        ].forEach(contentStack.addArrangedSubview)
+
+        contentStack.setCustomSpacing(4, after: brandLabel)
+        contentStack.setCustomSpacing(12, after: productNameLabel)
+        contentStack.setCustomSpacing(20, after: priceAmberStack)
+        contentStack.setCustomSpacing(8, after: descriptionLabel)
+        contentStack.setCustomSpacing(20, after: readMoreButton)
+        contentStack.setCustomSpacing(16, after: addToBagButton)
+        contentStack.setCustomSpacing(8, after: wishlistShareStack)
+        contentStack.setCustomSpacing(0, after: sizeAccordion)
+        contentStack.setCustomSpacing(0, after: compositionAccordion)
+        contentStack.setCustomSpacing(0, after: shippingAccordion)
     }
 
     private func setupLayout() {
+        let linePageControl = mediaCarouselView.linePageControl
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 20),
-            contentStack.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 20),
-            contentStack.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -20),
+
+            mediaCarouselView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
+            mediaCarouselView.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor),
+            mediaCarouselView.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor),
+            mediaCarouselView.heightAnchor.constraint(equalTo: mediaCarouselView.widthAnchor, multiplier: 1.33),
+
+            linePageControl.topAnchor.constraint(equalTo: mediaCarouselView.bottomAnchor, constant: 4),
+            linePageControl.centerXAnchor.constraint(equalTo: scrollView.frameLayoutGuide.centerXAnchor),
+            linePageControl.heightAnchor.constraint(equalToConstant: 2),
+
+            contentStack.topAnchor.constraint(equalTo: linePageControl.bottomAnchor, constant: 24),
+            contentStack.leadingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.leadingAnchor, constant: 24),
+            contentStack.trailingAnchor.constraint(equalTo: scrollView.frameLayoutGuide.trailingAnchor, constant: -24),
             contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -32),
-            mediaCarouselView.heightAnchor.constraint(equalToConstant: 420),
-            addToBagButton.heightAnchor.constraint(equalToConstant: 54),
+
+            addToBagButton.heightAnchor.constraint(equalToConstant: 56),
+
             loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+
             errorBanner.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             errorBanner.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             errorBanner.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+    }
+
+    private func makeWishlistLabel(_ text: String) -> UILabel {
+        let label = UILabel()
+        label.attributedText = NSAttributedString(string: text, attributes: [
+            .kern: CGFloat(1.5),
+            .font: UIFont.sans(size: 10, weight: .medium),
+            .foregroundColor: UIColor.primaryDim
+        ])
+        return label
     }
 
     private func setupLoadAdapter(slug: String) {
@@ -201,20 +329,17 @@ final class ProductDetailViewController: UIViewController {
     }
 
     private func applyDisplay(_ model: ProductDetailDisplayModel) {
-        title = model.title
-        designerLabel.attributedText = NSAttributedString(string: model.designerName.uppercased(), attributes: [
-            .kern: 0.8,
-            .font: UIFont.sans(size: 11, weight: .semibold),
-            .foregroundColor: UIColor.primaryDim
+        brandLabel.attributedText = NSAttributedString(string: model.designerName.uppercased(), attributes: [
+            .kern: CGFloat(3.3),
+            .font: UIFont.serif(size: 11, weight: .light),
+            .foregroundColor: UIColor.primary
         ])
         productNameLabel.text = model.productName
         priceLabel.text = model.priceText
         amberPointsLabel.text = model.amberPointsText
-        amberPointsLabel.isHidden = model.amberPointsText == nil
-        productCodeLabel.text = model.productCodeText
+        priceAmberStack.arrangedSubviews.dropFirst().forEach { $0.isHidden = model.amberPointsText == nil }
         descriptionLabel.text = model.descriptionText
-        descriptionHeaderLabel.isHidden = model.descriptionText?.isEmpty ?? true
-        descriptionLabel.isHidden = model.descriptionText?.isEmpty ?? true
+        readMoreButton.isHidden = (model.descriptionText?.isEmpty ?? true)
         mediaCarouselView.render(media: model.media)
         renderOptionGroups(model.optionGroups)
         addToBagButton.isEnabled = model.isAddToBagEnabled

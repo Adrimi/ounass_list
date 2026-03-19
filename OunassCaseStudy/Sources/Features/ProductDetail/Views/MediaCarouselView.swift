@@ -18,13 +18,7 @@ final class MediaCarouselView: UIView, UICollectionViewDataSource, UICollectionV
         return collectionView
     }()
 
-    private lazy var pageControl: UIPageControl = {
-        let pc = UIPageControl()
-        pc.currentPageIndicatorTintColor = .primary
-        pc.pageIndicatorTintColor = .surfaceVariant
-        pc.translatesAutoresizingMaskIntoConstraints = false
-        return pc
-    }()
+    let linePageControl = LinePageControl()
 
     private var media: [MediaAsset] = []
 
@@ -33,14 +27,11 @@ final class MediaCarouselView: UIView, UICollectionViewDataSource, UICollectionV
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         addSubview(collectionView)
-        addSubview(pageControl)
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            pageControl.centerXAnchor.constraint(equalTo: centerXAnchor),
-            pageControl.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10)
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
 
@@ -55,8 +46,8 @@ final class MediaCarouselView: UIView, UICollectionViewDataSource, UICollectionV
 
     func render(media: [MediaAsset]) {
         self.media = media
-        pageControl.numberOfPages = media.count
-        pageControl.isHidden = media.count <= 1
+        linePageControl.numberOfPages = media.count
+        linePageControl.isHidden = media.count <= 1
         collectionView.reloadData()
     }
 
@@ -77,6 +68,6 @@ final class MediaCarouselView: UIView, UICollectionViewDataSource, UICollectionV
 
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let page = Int(round(scrollView.contentOffset.x / max(scrollView.bounds.width, 1)))
-        pageControl.currentPage = page
+        linePageControl.currentPage = page
     }
 }
