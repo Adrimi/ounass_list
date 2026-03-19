@@ -8,8 +8,8 @@ final class MediaCarouselCell: UICollectionViewCell {
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
-        iv.layer.cornerRadius = 24
-        iv.backgroundColor = UIColor(white: 0.92, alpha: 1)
+        iv.layer.cornerRadius = 0
+        iv.backgroundColor = .surfaceContainer
         return iv
     }()
 

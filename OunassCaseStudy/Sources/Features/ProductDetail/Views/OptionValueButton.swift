@@ -19,14 +19,14 @@ final class OptionValueButton: UIControl {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor(white: 0.82, alpha: 1).cgColor
+        view.layer.borderColor = UIColor.surfaceVariant.cgColor
         return view
     }()
 
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = UIColor(white: 0.14, alpha: 1)
+        label.font = .sans(size: 14, weight: .medium)
+        label.textColor = .primary
         return label
     }()
 
@@ -34,10 +34,8 @@ final class OptionValueButton: UIControl {
         self.style = style
         super.init(frame: .zero)
 
-        layer.cornerRadius = 14
-        layer.borderWidth = 1
-        layer.borderColor = UIColor(white: 0.82, alpha: 1).cgColor
-        backgroundColor = .white
+        layer.cornerRadius = 0
+        backgroundColor = .surfaceContainer
 
         addSubview(stackView)
         stackView.addArrangedSubview(swatchView)
@@ -71,11 +69,11 @@ final class OptionValueButton: UIControl {
         alpha = resolvedValue.isEnabled ? 1 : 0.35
 
         if resolvedValue.isSelected {
-            layer.borderColor = UIColor(white: 0.1, alpha: 1).cgColor
-            layer.borderWidth = 2
+            backgroundColor = .primary
+            titleLabel.textColor = .white
         } else {
-            layer.borderColor = UIColor(white: 0.82, alpha: 1).cgColor
-            layer.borderWidth = 1
+            backgroundColor = .surfaceContainer
+            titleLabel.textColor = .primary
         }
     }
 

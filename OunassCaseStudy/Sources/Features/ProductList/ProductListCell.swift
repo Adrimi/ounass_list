@@ -6,7 +6,7 @@ final class ProductListCell: UICollectionViewCell {
     private lazy var stackView: UIStackView = {
         let sv = UIStackView()
         sv.axis = .vertical
-        sv.spacing = 8
+        sv.spacing = 6
         sv.translatesAutoresizingMaskIntoConstraints = false
         return sv
     }()
@@ -16,31 +16,30 @@ final class ProductListCell: UICollectionViewCell {
         iv.translatesAutoresizingMaskIntoConstraints = false
         iv.clipsToBounds = true
         iv.contentMode = .scaleAspectFill
-        iv.backgroundColor = UIColor(white: 0.93, alpha: 1)
-        iv.layer.cornerRadius = 18
+        iv.backgroundColor = .surfaceContainer
         return iv
     }()
 
     private lazy var designerLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 11, weight: .semibold)
-        label.textColor = UIColor(white: 0.35, alpha: 1)
-        label.numberOfLines = 2
+        label.font = .sans(size: 10, weight: .semibold)
+        label.textColor = .primaryDim
+        label.numberOfLines = 1
         return label
     }()
 
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .regular)
-        label.textColor = UIColor(white: 0.16, alpha: 1)
+        label.font = .serif(size: 14)
+        label.textColor = .onSurface
         label.numberOfLines = 3
         return label
     }()
 
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .semibold)
-        label.textColor = UIColor(white: 0.1, alpha: 1)
+        label.font = .sans(size: 13, weight: .medium)
+        label.textColor = .secondary
         return label
     }()
 
@@ -72,7 +71,7 @@ final class ProductListCell: UICollectionViewCell {
     }
 
     func configure(with product: ProductSummary, imageLoader: ImageLoader) {
-        designerLabel.text = product.designerName.uppercased()
+        designerLabel.attributedText = trackedString(product.designerName.uppercased(), kern: 0.8)
         nameLabel.text = product.name
         priceLabel.text = product.price.formatted
         imageView.image = nil
@@ -89,6 +88,14 @@ final class ProductListCell: UICollectionViewCell {
                 self.imageView.image = image
             }
         }
+    }
+
+    private func trackedString(_ string: String, kern: CGFloat) -> NSAttributedString {
+        NSAttributedString(string: string, attributes: [
+            .kern: kern,
+            .font: UIFont.sans(size: 10, weight: .semibold),
+            .foregroundColor: UIColor.primaryDim
+        ])
     }
 }
 

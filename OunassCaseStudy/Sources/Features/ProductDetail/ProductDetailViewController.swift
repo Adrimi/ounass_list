@@ -55,64 +55,71 @@ final class ProductDetailViewController: UIViewController {
 
     private lazy var designerLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .semibold)
-        label.textColor = UIColor(white: 0.34, alpha: 1)
+        label.font = .sans(size: 11, weight: .semibold)
+        label.textColor = .primaryDim
         label.numberOfLines = 0
         return label
     }()
 
     private lazy var productNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 28, weight: .semibold)
-        label.textColor = UIColor(white: 0.11, alpha: 1)
+        label.font = .serif(size: 28, weight: .light)
+        label.textColor = .onSurface
         label.numberOfLines = 0
         return label
     }()
 
     private lazy var priceLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 24, weight: .bold)
-        label.textColor = UIColor(white: 0.09, alpha: 1)
+        label.font = .sans(size: 20, weight: .medium)
+        label.textColor = .secondary
         return label
     }()
 
     private lazy var amberPointsLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .medium)
-        label.textColor = UIColor(red: 0.66, green: 0.42, blue: 0.16, alpha: 1)
+        label.font = .sans(size: 14, weight: .medium)
+        label.textColor = .secondary
         label.numberOfLines = 0
         return label
     }()
 
     private lazy var productCodeLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor(white: 0.42, alpha: 1)
+        label.font = .sans(size: 13)
+        label.textColor = .primaryDim
         return label
     }()
 
     private lazy var addToBagButton: UIButton = {
         let button = UIButton(type: .system)
-        button.backgroundColor = UIColor(white: 0.11, alpha: 1)
         button.setTitleColor(.white, for: .normal)
         button.setTitle("Add to Bag", for: .normal)
-        button.titleLabel?.font = .systemFont(ofSize: 17, weight: .semibold)
-        button.layer.cornerRadius = 16
+        button.titleLabel?.font = .sans(size: 17, weight: .semibold)
+        button.layer.cornerRadius = 0
         return button
+    }()
+
+    private lazy var addToBagGradient: CAGradientLayer = {
+        let gradient = CAGradientLayer()
+        gradient.colors = [UIColor.primary.cgColor, UIColor.primaryDim.cgColor]
+        gradient.startPoint = CGPoint(x: 0, y: 1)
+        gradient.endPoint = CGPoint(x: 1, y: 0)
+        return gradient
     }()
 
     private lazy var descriptionHeaderLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
-        label.textColor = UIColor(white: 0.12, alpha: 1)
+        label.font = .serif(size: 16)
+        label.textColor = .onSurface
         label.text = "Editor's advice"
         return label
     }()
 
     private lazy var descriptionLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15, weight: .regular)
-        label.textColor = UIColor(white: 0.2, alpha: 1)
+        label.font = .sans(size: 15)
+        label.textColor = .primary
         label.numberOfLines = 0
         return label
     }()
@@ -141,6 +148,7 @@ final class ProductDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .appBackground
+        addToBagButton.layer.insertSublayer(addToBagGradient, at: 0)
         [designerLabel, productNameLabel, priceLabel, amberPointsLabel, productCodeLabel].forEach(infoStack.addArrangedSubview)
         [mediaCarouselView, infoStack, optionsStack, addToBagButton, descriptionHeaderLabel, descriptionLabel].forEach(contentStack.addArrangedSubview)
         view.addSubview(scrollView)
@@ -150,6 +158,11 @@ final class ProductDetailViewController: UIViewController {
         setupLayout()
         setupLoadAdapter(slug: slug)
         loadAdapter.loadResource()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        addToBagGradient.frame = addToBagButton.bounds
     }
 
     private func setupLayout() {
@@ -189,7 +202,11 @@ final class ProductDetailViewController: UIViewController {
 
     private func applyDisplay(_ model: ProductDetailDisplayModel) {
         title = model.title
-        designerLabel.text = model.designerName.uppercased()
+        designerLabel.attributedText = NSAttributedString(string: model.designerName.uppercased(), attributes: [
+            .kern: 0.8,
+            .font: UIFont.sans(size: 11, weight: .semibold),
+            .foregroundColor: UIColor.primaryDim
+        ])
         productNameLabel.text = model.productName
         priceLabel.text = model.priceText
         amberPointsLabel.text = model.amberPointsText

@@ -20,8 +20,8 @@ final class MediaCarouselView: UIView, UICollectionViewDataSource, UICollectionV
 
     private lazy var pageControl: UIPageControl = {
         let pc = UIPageControl()
-        pc.currentPageIndicatorTintColor = UIColor(white: 0.1, alpha: 1)
-        pc.pageIndicatorTintColor = UIColor(white: 0.74, alpha: 1)
+        pc.currentPageIndicatorTintColor = .primary
+        pc.pageIndicatorTintColor = .surfaceVariant
         pc.translatesAutoresizingMaskIntoConstraints = false
         return pc
     }()

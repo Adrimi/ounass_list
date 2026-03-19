@@ -1,7 +1,13 @@
 import UIKit
 
 extension UIColor {
-    static let appBackground = UIColor(red: 0.98, green: 0.96, blue: 0.94, alpha: 1)
+    static let appBackground = UIColor(hex: "#fcf9f8")!
+    static let primary = UIColor(hex: "#5f5e5e")!
+    static let primaryDim = UIColor(hex: "#535252")!
+    static let secondary = UIColor(hex: "#785a1a")!
+    static let onSurface = UIColor(hex: "#323233")!
+    static let surfaceContainer = UIColor(hex: "#f0eded")!
+    static let surfaceVariant = UIColor(hex: "#e4e2e2")!
 
     convenience init?(hex: String?) {
         guard

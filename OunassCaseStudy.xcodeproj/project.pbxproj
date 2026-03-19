@@ -20,6 +20,7 @@
 		4777CE5368249010DC68C292 /* ProductListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647A4D41D924813242298A67 /* ProductListPresenter.swift */; };
 		579EBF962813006A06E1C0A2 /* PaginationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46058688A54E0C20BB03B72 /* PaginationResponse.swift */; };
 		58BBFCA49A5187B25A410CE6 /* ProductDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E76C621B26241355AEF561DE /* ProductDetailPresenter.swift */; };
+		5BE9B597E6C8C8C990C1B907 /* UIFont+Atelier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD6956A71E853446420A97EC /* UIFont+Atelier.swift */; };
 		61E604ADAC4F41F4B1699E18 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E5CC558919744DD428EA0 /* AppContainer.swift */; };
 		7013A08A0E3BC532665D3932 /* RootCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68455571A7D84CFD76CA9458 /* RootCoordinator.swift */; };
 		719F9D992E6546A56789AEE0 /* OptionValueButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA07A9CAF286734FB8F0DDC1 /* OptionValueButton.swift */; };
@@ -113,6 +114,7 @@
 		A237BDB0B22EABA317CB7F8A /* ProductSummary+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductSummary+Preview.swift"; sourceTree = "<group>"; };
 		A46058688A54E0C20BB03B72 /* PaginationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationResponse.swift; sourceTree = "<group>"; };
 		ABAB3707DD9861C9DACF349B /* ImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageLoader.swift; sourceTree = "<group>"; };
+		AD6956A71E853446420A97EC /* UIFont+Atelier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+Atelier.swift"; sourceTree = "<group>"; };
 		ADD0456634F783FFAB7B97D0 /* ProductListRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListRepositoryProtocol.swift; sourceTree = "<group>"; };
 		B1BEB09C679D6F6905C9C186 /* ProductListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListViewModelTests.swift; sourceTree = "<group>"; };
 		B22820362C1F4764E6FFD511 /* ProductDetailData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailData.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				954FCC6607E916AE316008DF /* UIColor+hex.swift */,
+				AD6956A71E853446420A97EC /* UIFont+Atelier.swift */,
 				7AA608B5DB50319682C38B31 /* UIImage+Make.swift */,
 			);
 			path = Extensions;
@@ -504,6 +507,7 @@
 				11527950A1677B3E64AEDE6D /* SelectionStateResolver.swift in Sources */,
 				A45150177BEB1B5931C1A714 /* SizeOptionResponse.swift in Sources */,
 				460A5F4461FBCC90A018346C /* UIColor+hex.swift in Sources */,
+				5BE9B597E6C8C8C990C1B907 /* UIFont+Atelier.swift in Sources */,
 				914B6880C0782F492B625CF9 /* UIImage+Make.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script type="text/javascript" nonce="772b7822da474beaa4cccf9d1c1" src="//local.adguard.org?ts=1773930162876&amp;type=content-script&amp;dmn=contribution.usercontent.google.com&amp;url=https%3A%2F%2Fcontribution.usercontent.google.com%2Fdownload%3Fc%3DCgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sXzhiOTZkNDlmYzlkNDRkMjc4MGI3ZTZhZjViMWI3ZTllEgsSBxDMlKz2twkYAZIBIwoKcHJvamVjdF9pZBIVQhM5ODIyOTg3MDQzMTk3NTA0OTY0%26filename%3D%26opi%3D89354086&amp;app=com.google.Chrome&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-java&amp;st-dnt"></script><script type="text/javascript" nonce="772b7822da474beaa4cccf9d1c1" src="//local.adguard.org?ts=1773930162876&amp;name=AdGuard%20Extra&amp;type=user-script"></script><link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@300;400;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container-high": "#eae8e7",
+              "surface-container": "#f0eded",
+              "on-tertiary": "#f9f9f4",
+              "on-background": "#323233",
+              "primary-fixed-dim": "#d6d4d3",
+              "on-surface": "#323233",
+              "surface-bright": "#fcf9f8",
+              "secondary-dim": "#6b4e0e",
+              "on-secondary-fixed-variant": "#745716",
+              "error-container": "#fe8983",
+              "on-primary-container": "#525151",
+              "surface-variant": "#e4e2e2",
+              "on-tertiary-fixed": "#484a47",
+              "outline": "#7b7b7a",
+              "on-primary-fixed-variant": "#5c5b5b",
+              "on-secondary-container": "#694d0c",
+              "on-secondary-fixed": "#543b00",
+              "on-tertiary-container": "#5b5c59",
+              "on-primary-fixed": "#403f3f",
+              "primary-fixed": "#e5e2e1",
+              "tertiary-container": "#f4f4ef",
+              "primary-container": "#e5e2e1",
+              "error": "#9f403d",
+              "tertiary-fixed": "#f4f4ef",
+              "surface-dim": "#dbdad9",
+              "on-tertiary-fixed-variant": "#656763",
+              "surface": "#fcf9f8",
+              "secondary": "#785a1a",
+              "tertiary-dim": "#525450",
+              "surface-container-low": "#f6f3f2",
+              "on-error-container": "#752121",
+              "secondary-fixed": "#ffdea5",
+              "outline-variant": "#b2b2b1",
+              "secondary-container": "#ffdea5",
+              "secondary-fixed-dim": "#f8cf83",
+              "error-dim": "#4e0309",
+              "inverse-on-surface": "#9e9c9c",
+              "primary": "#5f5e5e",
+              "tertiary-fixed-dim": "#e5e6e1",
+              "tertiary": "#5e605c",
+              "inverse-primary": "#ffffff",
+              "on-error": "#fff7f6",
+              "primary-dim": "#535252",
+              "background": "#fcf9f8",
+              "on-surface-variant": "#5f5f5f",
+              "on-primary": "#faf7f6",
+              "surface-container-highest": "#e4e2e2",
+              "surface-tint": "#5f5e5e",
+              "on-secondary": "#fff8f1",
+              "surface-container-lowest": "#ffffff",
+              "inverse-surface": "#0e0e0e"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0rem", "lg": "0rem", "xl": "0rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body selection:bg-secondary selection:text-on-secondary">
+<!-- Top Navigation Anchor -->
+<nav class="bg-[#fcf9f8] dark:bg-[#1a1a1a] backdrop-blur-xl bg-opacity-80 fixed top-0 z-50 w-full">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<button class="text-[#5f5e5e] dark:text-[#e4e2e2] hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<span class="text-2xl font-['Noto_Serif'] tracking-[0.2em] text-[#5f5e5e] dark:text-[#fcf9f8]">ATELIER</span>
+<button class="text-[#5f5e5e] dark:text-[#e4e2e2] hover:opacity-70 transition-opacity duration-300">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+</button>
+</div>
+<div class="bg-[#f0eded] dark:bg-[#2a2a2a] h-[1px] w-full opacity-50"></div>
+</nav>
+<main class="pt-20 pb-32">
+<!-- Asymmetric Product Media Gallery -->
+<section class="flex flex-col md:flex-row gap-4 px-0 md:px-12 overflow-hidden">
+<div class="w-full md:w-2/3 aspect-[3/4] overflow-hidden bg-surface-container">
+<img alt="High-fashion model in a luxury beige silk gown" class="w-full h-full object-cover" data-alt="Fashion model wearing a flowing silk dress" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDeQW0AtHfI4hoDI8w77D494SF5OUvSR0vKA5efkV8g7s8wH2vOwJtPvbvJy0aI_yMznp2T-2XCJdF-x9nyOM8I46GBDB9A67vuqRcf7ko6DuhMyUWAYaqkUPNtaIaJhWPOJrHtjKhxGiu2p78qxzCNFK3yfhKp7x9L1JFBe4nMFzsTZ1-Nk3ACDtteb-QJ0YLl6AHu_rySu2Ly1F6nz159P_0EIiCX5LHrGaQiZ9ANh39ZuLpqPe81le2Zs6VHwUcv4c2nWQHgEg"/>
+</div>
+<div class="hidden md:flex flex-col gap-4 w-1/3">
+<div class="h-1/2 bg-surface-container overflow-hidden">
+<img alt="Detail of fabric texture on luxury dress" class="w-full h-full object-cover" data-alt="Close up detail of high-end fabric texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmpw9BvOzmr3nyCoNE8UQ7DhPmuDUC_55hka9piZOc4NkhMbaLN3UgO7Pno8jLPDIg-63FzUl-LiAOAIGQdITqc-T0ufHT20Q7ex-ARHSmRd_-V21dcyNcTwZJSD1nQnKhAL_-s3gfuXii5qkxBAIzBkXj6fU5gjQ7UGf7b0LBMXFhr4kmm2UgLpo6npYjZv4J-t5EZu0iTGsWA8eL4w3DqvXmgSRhUF0zXmMWOQztajC2k5p7aeNw8iEzfI8xq37yL7RPB2GCDog"/>
+</div>
+<div class="h-1/2 bg-surface-container overflow-hidden">
+<img alt="Model profile in luxury apparel" class="w-full h-full object-cover" data-alt="Side profile of a model in luxury clothing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwJP4TvCCFbQr2DFRHkCPKuhayqOA6nD3LQt5v0XTwbrY3opQTLGHwKc2SHrBT_f30cmNK-50_PcZ8svYQBeG5D4pal2YriF5LMELgYG-Aaxy35UUepSvWf3NPyBT6S7QJU9JwRhoShtJO4xZsB9UxRoiv0jqId9uK-KYm38Jo_Z0k7Z-rytX9y6aQr5tKEKRSWPGQ940pE8MI1ZDNKkTCEXPdx91WYQnJKSfUbm1sMICEQrnIgh2Abu52xctVzIZKRfvNowUPsPY"/>
+</div>
+</div>
+<!-- Mobile indicator -->
+<div class="flex md:hidden justify-center gap-2 py-4">
+<div class="w-12 h-[2px] bg-primary"></div>
+<div class="w-8 h-[2px] bg-outline-variant"></div>
+<div class="w-8 h-[2px] bg-outline-variant"></div>
+</div>
+</section>
+<!-- Product Information Content -->
+<section class="px-6 md:px-24 mt-12 md:mt-20 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12">
+<!-- Left Column: Identity -->
+<div class="lg:col-span-7">
+<p class="font-headline text-sm tracking-[0.3em] text-primary uppercase mb-4">Maison de L'Atelier</p>
+<h1 class="font-headline text-4xl md:text-6xl text-on-background leading-tight mb-6">Asymmetric Drape Silk Evening Gown</h1>
+<div class="flex items-center gap-4 mb-12">
+<span class="font-body text-2xl text-on-surface">AED 4,250</span>
+<div class="h-4 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="stars" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="font-body text-xs tracking-widest text-secondary uppercase">245 Amber Points</span>
+</div>
+</div>
+<!-- Description -->
+<div class="max-w-2xl">
+<p class="font-body text-on-surface-variant leading-relaxed mb-4">
+                        A masterpiece of contemporary draping, this evening gown is crafted from 100% heavy-weight mulberry silk. The architectural silhouette features a hand-pleated bodice that cascades into a fluid, floor-sweeping skirt.
+                    </p>
+<button class="font-body text-xs tracking-widest text-primary uppercase border-b border-primary pb-1 hover:text-secondary hover:border-secondary transition-colors duration-300">Read More</button>
+</div>
+<!-- Details Accordion Concept (Static) -->
+<div class="mt-16 space-y-8">
+<div class="pt-6 border-t border-surface-container-highest flex justify-between items-center group cursor-pointer">
+<span class="font-body text-xs tracking-widest uppercase text-on-surface">Size &amp; Fit</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="add">add</span>
+</div>
+<div class="pt-6 border-t border-surface-container-highest flex justify-between items-center group cursor-pointer">
+<span class="font-body text-xs tracking-widest uppercase text-on-surface">Composition &amp; Care</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="add">add</span>
+</div>
+<div class="pt-6 border-t border-surface-container-highest flex justify-between items-center group cursor-pointer">
+<span class="font-body text-xs tracking-widest uppercase text-on-surface">Shipping &amp; Returns</span>
+<span class="material-symbols-outlined text-outline group-hover:text-primary" data-icon="add">add</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Interaction -->
+<div class="lg:col-span-5 lg:sticky lg:top-32 h-fit bg-surface-container-low p-8 md:p-12">
+<!-- Color Selection -->
+<div class="mb-10">
+<p class="font-body text-[10px] tracking-[0.2em] uppercase text-outline mb-4">Select Color: <span class="text-on-surface">Obsidian Black</span></p>
+<div class="flex gap-4">
+<button class="w-10 h-10 ring-1 ring-offset-4 ring-primary bg-[#1a1a1a] flex items-center justify-center">
+<div class="w-full h-full bg-[#1a1a1a]"></div>
+</button>
+<button class="w-10 h-10 hover:ring-1 hover:ring-offset-4 hover:ring-outline-variant bg-[#d4c5b3] transition-all">
+<div class="w-full h-full bg-[#d4c5b3]"></div>
+</button>
+<button class="w-10 h-10 hover:ring-1 hover:ring-offset-4 hover:ring-outline-variant bg-[#525b44] transition-all">
+<div class="w-full h-full bg-[#525b44]"></div>
+</button>
+</div>
+</div>
+<!-- Size Selection -->
+<div class="mb-12">
+<div class="flex justify-between items-end mb-4">
+<p class="font-body text-[10px] tracking-[0.2em] uppercase text-outline">Select Size (IT)</p>
+<button class="font-body text-[10px] tracking-[0.1em] text-secondary uppercase underline underline-offset-4">Size Guide</button>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button class="h-12 border border-surface-container-highest flex items-center justify-center font-body text-sm text-on-surface hover:bg-primary hover:text-on-primary transition-colors">38</button>
+<button class="h-12 border border-primary flex items-center justify-center font-body text-sm bg-primary text-on-primary">40</button>
+<button class="h-12 border border-surface-container-highest flex items-center justify-center font-body text-sm text-on-surface hover:bg-primary hover:text-on-primary transition-colors">42</button>
+<button class="h-12 border border-surface-container-highest flex items-center justify-center font-body text-sm text-outline-variant cursor-not-allowed relative overflow-hidden">
+                            44
+                            <div class="absolute w-full h-[1px] bg-outline-variant rotate-45"></div>
+</button>
+</div>
+</div>
+<!-- Action -->
+<button class="w-full bg-primary text-on-primary py-6 px-8 font-body text-sm tracking-[0.2em] uppercase hover:bg-primary-dim transition-all active:scale-[0.98] duration-200">
+                    Add to Bag
+                </button>
+<div class="mt-6 flex items-center justify-center gap-6">
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-outline group-hover:text-secondary transition-colors" data-icon="favorite">favorite</span>
+<span class="font-body text-[10px] tracking-widest text-outline uppercase group-hover:text-on-surface">Wishlist</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant opacity-30"></div>
+<button class="flex items-center gap-2 group">
+<span class="material-symbols-outlined text-outline group-hover:text-secondary transition-colors" data-icon="share">share</span>
+<span class="font-body text-[10px] tracking-widest text-outline uppercase group-hover:text-on-surface">Share</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Recommended / Complete the look -->
+<section class="mt-32 px-6 md:px-24 max-w-7xl mx-auto">
+<h3 class="font-headline text-2xl mb-12">Complete the Look</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+<!-- Item 1 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container mb-4 overflow-hidden">
+<img alt="Designer luxury heels" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Luxury high-heeled designer shoes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOh0xHbFSC0p7tTl4dAUVGsZvAMsWW1QJef_0v6EzfsDS24dxmuzu2CBAetccvD4ugZVq2A_yHNKQhHHmgfycbOlFIdGUhbTNeDk7LjJ_8yUDcYJ-ZKppe4K7pl84gTeVpIi_gzBg3fr-51yRKRpeByrEYj1k7BOTb-iwE1xzwioGuC0cdXKqrrvbPNyF8hfVwJYUGuPFHM69Bbo0N75ujoacRTSLfc09JP8gI810xAhjWP-wke-7T6NzXiokZXPnJcixgJupTABI"/>
+</div>
+<p class="font-body text-[10px] tracking-widest text-outline uppercase">Atelier Accessories</p>
+<p class="font-headline text-lg text-on-surface mt-1">Velvet Pointed Pumps</p>
+<p class="font-body text-sm text-on-surface-variant mt-1">AED 2,800</p>
+</div>
+<!-- Item 2 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container mb-4 overflow-hidden">
+<img alt="Luxury leather clutch" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Minimalist leather designer clutch bag" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf3h3dMGpmUlP_J5VWokH6pocouZBhSabXqs1lfwK5U1n0pjxTV5W3EpZj_S3flQjEY2-n2gXipv0GMG9gFqduQGamhtk6c3-s8jz4RR8uiDyxHuEAH_MLcDYWoT0baVD10Cki4ff-s81qL5QjJai6b54OrlnWQPRtGPE5ecvhVVmtDLdGpgVCnpb1eYIOmaU1FbnJNADxbNCQZd2-JnGBxYzLbYubmVkjETh3kgTjXBpODH3cHMmJrGFZziP2h33Y96BVN0auZ6U"/>
+</div>
+<p class="font-body text-[10px] tracking-widest text-outline uppercase">Maison de L'Atelier</p>
+<p class="font-headline text-lg text-on-surface mt-1">Sculptural Clutch</p>
+<p class="font-body text-sm text-on-surface-variant mt-1">AED 1,950</p>
+</div>
+<!-- Item 3 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container mb-4 overflow-hidden">
+<img alt="Gold statement earrings" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Gold designer earrings jewelry detail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBGT4OoDoWAN7ExZmZW5z04pscEKHQV3TtDlL-nDeTM0Siw1YYms4n_ftESmMQjjCMC4CQFFRvx3YpEDcO9ZKPHHLp5sXNHkxkIXsWsiWwk1z3-jucQHbFktt950njUPvrNEJEIZOVjrcU7oAUOAN3_Z5rag8ix24OMAHnHTYFsx13pORnF3gyXHtEnhe99NYuH9mYm_ZRg-DKCsaKMGznC-H4QQ6CehFiZcKe5eBEnrqz8Ksw5KAQnnAfDBamjXh6SVcrMUk9o9k"/>
+</div>
+<p class="font-body text-[10px] tracking-widest text-outline uppercase">Vogue Bijoux</p>
+<p class="font-headline text-lg text-on-surface mt-1">Gilded Leaf Earrings</p>
+<p class="font-body text-sm text-on-surface-variant mt-1">AED 850</p>
+</div>
+<!-- Item 4 -->
+<div class="group">
+<div class="aspect-[3/4] bg-surface-container mb-4 overflow-hidden">
+<img alt="Luxury silk wrap" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Silk wrap accessory for evening wear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxyFB4fd_rIvV2Cjn5bwS6Bow28vg6-nsHgM-q3IpwmbC3FEA6j44xy2iZ5AHevNidIG_V1cRbaXMazbvk0xniwb2Ai-MU9Fvk1FfM5smb_PVif_vj7WG8AzWpY2Ve6mWaFJtF4JmrZ8Ijubc2-uSNRX0MU5FazB63Iyo8l08j6eWLTdnJaMJV3x-1yrRn-Lh-ZSIe4NbGFsTf66z_2bDUUuYcmi5MmGtWAnIBKJeUgQiuHj0dQbwf-V2kwtfRIFynk-y8FzJQn0I"/>
+</div>
+<p class="font-body text-[10px] tracking-widest text-outline uppercase">Atelier Couture</p>
+<p class="font-headline text-lg text-on-surface mt-1">Organza Evening Wrap</p>
+<p class="font-body text-sm text-on-surface-variant mt-1">AED 1,200</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Shell -->
+<footer class="fixed bottom-0 left-0 w-full flex justify-around items-center px-8 pb-8 pt-4 bg-[#fcf9f8] dark:bg-[#1a1a1a] backdrop-blur-xl bg-opacity-90 z-50">
+<button class="flex flex-col items-center justify-center text-[#5f5e5e] dark:text-[#7d7d7d] hover:text-[#785a1a] transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#5f5e5e] dark:text-[#7d7d7d] hover:text-[#785a1a] transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#785a1a] dark:text-[#785a1a] scale-110">
+<span class="material-symbols-outlined" data-icon="shopping_bag" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+</button>
+<button class="flex flex-col items-center justify-center text-[#5f5e5e] dark:text-[#7d7d7d] hover:text-[#785a1a] transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+</button>
+</footer>
+</body></html>

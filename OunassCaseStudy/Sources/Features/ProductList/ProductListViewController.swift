@@ -45,9 +45,9 @@ final class ProductListViewController: UIViewController {
 
     private static func makeFlowLayout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 16
-        layout.minimumLineSpacing = 24
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 40, right: 20)
+        layout.minimumInteritemSpacing = 12
+        layout.minimumLineSpacing = 32
+        layout.sectionInset = UIEdgeInsets(top: 24, left: 16, bottom: 48, right: 16)
         return layout
     }
 
