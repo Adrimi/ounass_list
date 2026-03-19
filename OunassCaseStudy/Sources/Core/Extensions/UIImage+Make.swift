@@ -1,3 +1,4 @@
+#if DEBUG
 import UIKit
 
 extension UIImage {
@@ -9,3 +10,4 @@ extension UIImage {
         }
     }
 }
+#endif

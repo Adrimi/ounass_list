@@ -49,17 +49,11 @@ struct ProductListViewAdapterTests {
         collectionVC.collectionView.register(ProductListCell.self, forCellWithReuseIdentifier: ProductListCell.reuseIdentifier)
         let adapter = ProductListViewAdapter(
             controller: collectionVC,
-            imageLoader: MockImageLoader(),
+            imageLoader: FakeImageLoader(),
             selection: { _ in },
             loadMoreLoader: nil
         )
         return (adapter, collectionVC)
-    }
-}
-
-private class MockImageLoader: ImageLoader {
-    func loadImage(from url: URL) async throws -> UIImage {
-        .make(withColor: .red)
     }
 }
 

@@ -91,3 +91,14 @@ final class ProductListCell: UICollectionViewCell {
         }
     }
 }
+
+#if canImport(SwiftUI)
+import SwiftUI
+
+@available(iOS 17, *)
+#Preview(traits: .sizeThatFitsLayout) {
+    let cell = ProductListCell(frame: .zero)
+    cell.configure(with: .fake(), imageLoader: FakeImageLoader())
+    return cell
+}
+#endif

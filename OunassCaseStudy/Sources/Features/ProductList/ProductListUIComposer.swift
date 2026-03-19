@@ -6,14 +6,14 @@ final class ProductListUIComposer {
         imageLoader: ImageLoader,
         onSelection: @escaping (ProductSummary) -> Void
     ) -> ProductListViewController {
-        let vc = ProductListViewController()
+        let viewController = ProductListViewController()
 
         let adapter = LoadResourcePresentationAdapter<ProductListPage, ProductListViewAdapter>(
             loader: { try await repository.fetchFirstPage() }
         )
 
         let viewAdapter = ProductListViewAdapter(
-            controller: vc.collectionVC,
+            controller: viewController.collectionVC,
             imageLoader: imageLoader,
             selection: onSelection,
             loadMoreLoader: { path in try await repository.fetchPage(path: path) }
@@ -21,15 +21,15 @@ final class ProductListUIComposer {
 
         adapter.presenter = LoadResourcePresenter(
             resourceView: viewAdapter,
-            loadingView: WeakRefVirtualProxy(vc.collectionVC),
-            errorView: WeakRefVirtualProxy(vc.collectionVC)
+            loadingView: WeakRefVirtualProxy(viewController.collectionVC),
+            errorView: WeakRefVirtualProxy(viewController.collectionVC)
         )
 
-        vc.onRefresh = { [weak viewAdapter] in
+        viewController.onRefresh = { [weak viewAdapter] in
             viewAdapter?.reset()
             adapter.loadResource()
         }
 
-        return vc
+        return viewController
     }
 }

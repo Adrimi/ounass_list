@@ -13,8 +13,12 @@ targets:
     deploymentTarget: "13.0"
     sources:
       - path: OunassCaseStudy/Sources
+        name: OunassCaseStudy
     resources:
       - path: OunassCaseStudy/Resources
+    dependencies:
+      - sdk: SwiftUI.framework
+        embed: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.adrian.ounass-case-study
