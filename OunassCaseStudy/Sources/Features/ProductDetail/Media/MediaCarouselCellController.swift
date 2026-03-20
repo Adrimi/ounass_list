@@ -1,36 +1,30 @@
 import UIKit
 
-final class ProductListCellController: NSObject {
-    private let product: ProductSummary
-    private let imageDelegate: ImageCellControllerDelegate?
-    private let selection: () -> Void
-    private var cell: ProductListCell?
+final class MediaCarouselCellController: NSObject {
+    typealias ResourceViewModel = UIImage
 
-    init(product: ProductSummary, imageDelegate: ImageCellControllerDelegate?, selection: @escaping () -> Void) {
-        self.product = product
+    private let imageDelegate: ImageCellControllerDelegate
+    private weak var cell: MediaCarouselCell?
+
+    init(imageDelegate: ImageCellControllerDelegate) {
         self.imageDelegate = imageDelegate
-        self.selection = selection
     }
 }
 
-extension ProductListCellController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
+extension MediaCarouselCellController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         1
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductListCell.reuseIdentifier, for: indexPath) as! ProductListCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MediaCarouselCell.reuseIdentifier, for: indexPath) as! MediaCarouselCell
         self.cell = cell
-        cell.configure(with: product)
+        cell.prepareForDisplay()
         cell.onRetry = { [weak self] in
-            self?.imageDelegate?.didRequestImage()
+            self?.imageDelegate.didRequestImage()
         }
-        imageDelegate?.didRequestImage()
+        imageDelegate.didRequestImage()
         return cell
-    }
-
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selection()
     }
 
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -38,7 +32,7 @@ extension ProductListCellController: UICollectionViewDataSource, UICollectionVie
     }
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        imageDelegate?.didRequestImage()
+        imageDelegate.didRequestImage()
     }
 
     func collectionView(_ collectionView: UICollectionView, cancelPrefetchingForItemsAt indexPaths: [IndexPath]) {
@@ -47,7 +41,7 @@ extension ProductListCellController: UICollectionViewDataSource, UICollectionVie
 
     private func cancelImageLoad() {
         releaseCellForReuse()
-        imageDelegate?.didCancelImageRequest()
+        imageDelegate.didCancelImageRequest()
     }
 
     private func releaseCellForReuse() {
@@ -55,9 +49,7 @@ extension ProductListCellController: UICollectionViewDataSource, UICollectionVie
     }
 }
 
-extension ProductListCellController: ResourceView, ResourceLoadingView, ResourceErrorView {
-    typealias ResourceViewModel = UIImage
-
+extension MediaCarouselCellController: ResourceView, ResourceLoadingView, ResourceErrorView {
     func display(_ viewModel: UIImage) {
         cell?.imageView.setImageAnimated(viewModel)
     }

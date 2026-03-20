@@ -2,8 +2,10 @@ import Foundation
 
 final class LoadResourcePresentationAdapter<Resource, View: ResourceView> {
     var presenter: LoadResourcePresenter<Resource, View>?
-    private var isLoading = false
     private let loader: () async throws -> Resource
+    private var task: Task<Void, Never>?
+    private var activeTaskID: UUID?
+    private var isLoading = false
 
     init(loader: @escaping () async throws -> Resource) {
         self.loader = loader
@@ -11,37 +13,71 @@ final class LoadResourcePresentationAdapter<Resource, View: ResourceView> {
 
     func loadResource() {
         guard !isLoading else { return }
-        isLoading = true
         presenter?.didStartLoading()
+        isLoading = true
+        let taskID = UUID()
+        activeTaskID = taskID
 
-        Task { @MainActor in
-            defer { self.isLoading = false }
+        task = Task.init { [weak self] in
             do {
+                guard let self else { return }
                 let resource = try await self.loader()
-                self.presenter?.didFinishLoading(with: resource)
+                await self.finishLoading(taskID: taskID, with: .success(resource))
+            } catch is CancellationError {
+                guard let self else { return }
+                await self.cancelLoading(taskID: taskID)
             } catch {
-                self.presenter?.didFinishLoading(with: error)
+                guard let self else { return }
+                await self.finishLoading(taskID: taskID, with: .failure(error))
             }
         }
     }
-}
 
-final class WeakRefVirtualProxy<T: AnyObject> {
-    private weak var object: T?
+    func cancelResourceLoading() {
+        guard activeTaskID != nil else { return }
+        task?.cancel()
+        reset()
+    }
 
-    init(_ object: T) {
-        self.object = object
+    private func finishLoading(taskID: UUID, with result: Result<Resource, Error>) async {
+        await MainActor.run { [weak self] in
+            guard let self, self.activeTaskID == taskID else { return }
+
+            switch result {
+            case let .success(resource):
+                presenter?.didFinishLoading(with: resource)
+            case let .failure(error):
+                presenter?.didFinishLoading(with: error)
+            }
+
+            reset()
+        }
+    }
+
+    private func cancelLoading(taskID: UUID) async {
+        await MainActor.run { [weak self] in
+            guard let self, self.activeTaskID == taskID else { return }
+            reset()
+        }
+    }
+
+    private func reset() {
+        task = nil
+        activeTaskID = nil
+        isLoading = false
+    }
+
+    deinit {
+        task?.cancel()
     }
 }
 
-extension WeakRefVirtualProxy: ResourceLoadingView where T: ResourceLoadingView {
-    func display(_ viewModel: ResourceLoadingViewModel) {
-        object?.display(viewModel)
+extension LoadResourcePresentationAdapter: ImageCellControllerDelegate {
+    func didRequestImage() {
+        loadResource()
     }
-}
 
-extension WeakRefVirtualProxy: ResourceErrorView where T: ResourceErrorView {
-    func display(_ viewModel: ResourceErrorViewModel) {
-        object?.display(viewModel)
+    func didCancelImageRequest() {
+        cancelResourceLoading()
     }
 }

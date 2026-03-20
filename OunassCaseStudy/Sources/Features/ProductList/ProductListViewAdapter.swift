@@ -2,6 +2,7 @@ import UIKit
 
 final class ProductListViewAdapter: ResourceView {
     typealias ResourceViewModel = Paginated<ProductSummary>
+    private typealias ImagePresentationAdapter = LoadResourcePresentationAdapter<UIImage, WeakRefVirtualProxy<ProductListCellController>>
     private typealias LoadMorePresentationAdapter = LoadResourcePresentationAdapter<Paginated<ProductSummary>, ProductListViewAdapter>
 
     private weak var controller: CollectionViewController?
@@ -30,10 +31,20 @@ final class ProductListViewAdapter: ResourceView {
                 return controller
             }
 
+            let imageDelegate = product.thumbnailURL.map { url in
+                makeImagePresentationAdapter(for: url)
+            }
+
             let view = ProductListCellController(
                 product: product,
-                imageLoader: imageLoader,
+                imageDelegate: imageDelegate,
                 selection: { [selection] in selection(product) }
+            )
+
+            imageDelegate?.presenter = LoadResourcePresenter(
+                resourceView: WeakRefVirtualProxy(view),
+                loadingView: WeakRefVirtualProxy(view),
+                errorView: WeakRefVirtualProxy(view)
             )
 
             let controller = CellController(id: product, view)
@@ -61,5 +72,11 @@ final class ProductListViewAdapter: ResourceView {
         )
 
         controller.display(productCells, [CellController(id: UUID(), loadMoreCellController)])
+    }
+
+    private func makeImagePresentationAdapter(for url: URL) -> ImagePresentationAdapter {
+        ImagePresentationAdapter(loader: { [imageLoader] in
+            try await imageLoader.loadImage(from: url)
+        })
     }
 }

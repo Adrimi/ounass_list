@@ -3,7 +3,6 @@ import UIKit
 final class ProductDetailViewController: UIViewController {
     private let slug: String
     private let repository: ProductDetailRepositoryProtocol
-    private let imageLoader: ImageLoader
 
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -46,6 +45,7 @@ final class ProductDetailViewController: UIViewController {
     }()
 
     private let mediaCarouselView: MediaCarouselView
+    private let mediaCarouselViewAdapter: MediaCarouselViewAdapter
 
     private lazy var brandLabel: UILabel = {
         let label = UILabel()
@@ -216,8 +216,8 @@ final class ProductDetailViewController: UIViewController {
     init(slug: String, repository: ProductDetailRepositoryProtocol, imageLoader: ImageLoader) {
         self.slug = slug
         self.repository = repository
-        self.imageLoader = imageLoader
-        self.mediaCarouselView = MediaCarouselView(imageLoader: imageLoader)
+        self.mediaCarouselView = MediaCarouselView()
+        self.mediaCarouselViewAdapter = MediaCarouselViewAdapter(view: self.mediaCarouselView, imageLoader: imageLoader)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -340,7 +340,7 @@ final class ProductDetailViewController: UIViewController {
         priceAmberStack.arrangedSubviews.dropFirst().forEach { $0.isHidden = model.amberPointsText == nil }
         descriptionLabel.text = model.descriptionText
         readMoreButton.isHidden = (model.descriptionText?.isEmpty ?? true)
-        mediaCarouselView.render(media: model.media)
+        mediaCarouselViewAdapter.display(model.media)
         renderOptionGroups(model.optionGroups)
         addToBagButton.isEnabled = model.isAddToBagEnabled
         addToBagButton.alpha = model.isAddToBagEnabled ? 1 : 0.45
