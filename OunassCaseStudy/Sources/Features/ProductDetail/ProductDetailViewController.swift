@@ -1,8 +1,8 @@
 import UIKit
 
 final class ProductDetailViewController: UIViewController {
-    private let slug: String
     private let repository: ProductDetailRepositoryProtocol
+    private var requestedSlug: String
 
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -37,8 +37,7 @@ final class ProductDetailViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.onHide = { [weak self] in
             guard let self else { return }
-            let currentSlug = self.currentDetail?.slug ?? self.slug
-            self.setupLoadAdapter(slug: currentSlug)
+            self.setupLoadAdapter(slug: self.requestedSlug)
             self.loadAdapter.loadResource()
         }
         return view
@@ -109,6 +108,12 @@ final class ProductDetailViewController: UIViewController {
         label.font = .sans(size: 15)
         label.textColor = .onSurface
         label.numberOfLines = 3
+        return label
+    }()
+
+    private lazy var productIDLabel: UILabel = {
+        let label = UILabel()
+        label.numberOfLines = 0
         return label
     }()
 
@@ -214,8 +219,8 @@ final class ProductDetailViewController: UIViewController {
     private var loadAdapter: LoadResourcePresentationAdapter<ProductDetail, ProductDetailViewController>!
 
     init(slug: String, repository: ProductDetailRepositoryProtocol, imageLoader: ImageLoader) {
-        self.slug = slug
         self.repository = repository
+        self.requestedSlug = slug
         self.mediaCarouselView = MediaCarouselView()
         self.mediaCarouselViewAdapter = MediaCarouselViewAdapter(view: self.mediaCarouselView, imageLoader: imageLoader)
         super.init(nibName: nil, bundle: nil)
@@ -238,7 +243,7 @@ final class ProductDetailViewController: UIViewController {
         view.addSubview(loadingIndicator)
         view.addSubview(errorBanner)
         setupLayout()
-        setupLoadAdapter(slug: slug)
+        setupLoadAdapter(slug: requestedSlug)
         loadAdapter.loadResource()
     }
 
@@ -247,6 +252,7 @@ final class ProductDetailViewController: UIViewController {
             brandLabel,
             productNameLabel,
             priceAmberStack,
+            productIDLabel,
             descriptionLabel,
             readMoreButton,
             optionsStack,
@@ -260,7 +266,8 @@ final class ProductDetailViewController: UIViewController {
 
         contentStack.setCustomSpacing(4, after: brandLabel)
         contentStack.setCustomSpacing(12, after: productNameLabel)
-        contentStack.setCustomSpacing(20, after: priceAmberStack)
+        contentStack.setCustomSpacing(8, after: priceAmberStack)
+        contentStack.setCustomSpacing(20, after: productIDLabel)
         contentStack.setCustomSpacing(8, after: descriptionLabel)
         contentStack.setCustomSpacing(20, after: readMoreButton)
         contentStack.setCustomSpacing(16, after: addToBagButton)
@@ -338,6 +345,11 @@ final class ProductDetailViewController: UIViewController {
         priceLabel.text = model.priceText
         amberPointsLabel.text = model.amberPointsText
         priceAmberStack.arrangedSubviews.dropFirst().forEach { $0.isHidden = model.amberPointsText == nil }
+        productIDLabel.attributedText = NSAttributedString(string: model.productIDText, attributes: [
+            .kern: CGFloat(1.2),
+            .font: UIFont.sans(size: 11, weight: .medium),
+            .foregroundColor: UIColor.primaryDim
+        ])
         descriptionLabel.text = model.descriptionText
         readMoreButton.isHidden = (model.descriptionText?.isEmpty ?? true)
         mediaCarouselViewAdapter.display(model.media)
@@ -373,6 +385,7 @@ final class ProductDetailViewController: UIViewController {
             if let cached = cachedDetails[valueID] {
                 let previousSizeID = selectedValueIDs[ProductOptionGroupID.size]
                 currentDetail = cached
+                requestedSlug = cached.slug
                 selectedValueIDs = cached.initialSelectedValues
                 if
                     let previousSizeID,
@@ -386,6 +399,7 @@ final class ProductDetailViewController: UIViewController {
             }
 
             let previousSizeID = selectedValueIDs[ProductOptionGroupID.size]
+            requestedSlug = remoteSlug
             setupLoadAdapter(slug: remoteSlug)
             if let previousSizeID { preservedSizeID = previousSizeID }
             loadAdapter.loadResource()
@@ -404,7 +418,8 @@ final class ProductDetailViewController: UIViewController {
             optionGroups: detail.optionGroups,
             variants: detail.variants,
             selectedValueIDs: selectedValueIDs,
-            fallbackVariantID: detail.fallbackVariantID
+            fallbackVariantID: detail.fallbackVariantID,
+            externallySelectableValueIDsByGroupID: detail.remoteSelectionSlugsByGroupID.mapValues { Set($0.keys) }
         )
         let model = ProductDetailPresenter.map(detail, selectionState: state)
         applyDisplay(model)
@@ -417,6 +432,7 @@ extension ProductDetailViewController: ResourceView {
     func display(_ detail: ProductDetail) {
         cachedDetails[detail.styleColorID] = detail
         currentDetail = detail
+        requestedSlug = detail.slug
 
         var values = detail.initialSelectedValues
         if

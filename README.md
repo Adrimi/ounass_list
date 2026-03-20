@@ -34,8 +34,9 @@ This structure avoids Apple MVC by keeping controllers focused on view compositi
 - If a detail response exposes more than one size, the UI renders a size selector. If there is only one size, the selector is omitted, and an available single size is preselected.
 - If a product has no selectable options, the resolver treats the only variant as the displayed variant and enables Add to Bag immediately.
 - When color and size both exist, selecting a color constrains the set of enabled sizes to variants that remain available for that color.
-- When a color maps to a different remote slug, the screen fetches that alternate detail payload and refreshes the product media, description, price, and Amber points from the newly selected variant context.
+- When a color maps to a different remote slug, the screen keeps that swatch selectable, fetches the alternate detail payload on tap, and refreshes the product media, description, price, product ID, and Amber points from the newly selected variant context.
 - Previously loaded color variants are cached in memory by style-color ID so returning to a prior color can reuse the loaded detail model.
+- The detail screen exposes the displayed variant SKU as product metadata and updates it when size or color selection changes the displayed variant.
 - The Add to Bag button reflects selection state only. The brief explicitly excludes the real Add to Bag request, and this project keeps that action out of scope.
 
 ## Design Decisions

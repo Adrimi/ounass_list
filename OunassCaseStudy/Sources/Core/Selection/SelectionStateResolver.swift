@@ -27,7 +27,8 @@ struct SelectionStateResolver {
         optionGroups: [ProductOptionGroup],
         variants: [ProductVariant],
         selectedValueIDs: [String: String],
-        fallbackVariantID: String
+        fallbackVariantID: String,
+        externallySelectableValueIDsByGroupID: [String: Set<String>] = [:]
     ) -> SelectionState {
         let fallbackVariant = variants.first(where: { $0.id == fallbackVariantID }) ?? variants.first ?? ProductVariant(
             id: fallbackVariantID,
@@ -53,14 +54,15 @@ struct SelectionStateResolver {
             let values = group.values.map { value in
                 let otherSelections = selectedValueIDs.filter { $0.key != group.id }
                 let candidateSelections = otherSelections.merging([group.id: value.id]) { _, new in new }
-                let isEnabled = variants.contains { variant in
+                let isLocallyEnabled = variants.contains { variant in
                     variant.isAvailable && selections(candidateSelections, match: variant.optionValueIDs)
                 }
+                let isExternallySelectable = externallySelectableValueIDsByGroupID[group.id]?.contains(value.id) == true
 
                 return ResolvedOptionValue(
                     value: value,
                     isSelected: selectedValueIDs[group.id] == value.id,
-                    isEnabled: isEnabled && value.isAvailable
+                    isEnabled: (isLocallyEnabled || isExternallySelectable) && value.isAvailable
                 )
             }
 

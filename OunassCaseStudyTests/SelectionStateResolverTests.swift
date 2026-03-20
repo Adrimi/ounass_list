@@ -118,6 +118,43 @@ struct SelectionStateResolverTests {
         let sizeS = sizeGroup?.values.first(where: { $0.value.id == "s" })
         #expect(sizeS?.isEnabled == false)
     }
+
+    @Test func testRemoteColorValueRemainsEnabledWhenMappedToRemoteSlug() {
+        let state = resolver.resolve(
+            optionGroups: [
+                ProductOptionGroup(
+                    id: ProductOptionGroupID.color,
+                    title: "Color",
+                    displayStyle: .swatch,
+                    isRequired: true,
+                    values: [
+                        ProductOptionValue(id: "yellow", title: "Yellow", swatchHex: "#FEE877", isAvailable: true),
+                        ProductOptionValue(id: "blue", title: "Blue", swatchHex: "#5E96E1", isAvailable: true)
+                    ]
+                )
+            ],
+            variants: [
+                ProductVariant(
+                    id: "yellow",
+                    sku: "sku-yellow",
+                    optionValueIDs: [ProductOptionGroupID.color: "yellow"],
+                    description: "Yellow variant",
+                    media: [.sample(id: "yellow")],
+                    price: Money(amount: 100, currencyCode: "AED"),
+                    amberPoints: nil,
+                    isAvailable: true
+                )
+            ],
+            selectedValueIDs: [ProductOptionGroupID.color: "yellow"],
+            fallbackVariantID: "yellow",
+            externallySelectableValueIDsByGroupID: [ProductOptionGroupID.color: Set(["blue"])]
+        )
+
+        let colorGroup = state.groups.first(where: { $0.id == ProductOptionGroupID.color })
+        let blue = colorGroup?.values.first(where: { $0.value.id == "blue" })
+
+        #expect(blue?.isEnabled == true)
+    }
 }
 
 private extension MediaAsset {
