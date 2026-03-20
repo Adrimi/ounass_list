@@ -1,8 +1,9 @@
 import UIKit
 
 final class ProductDetailViewController: UIViewController {
-    private let repository: ProductDetailRepositoryProtocol
-    private var requestedSlug: String
+    var onLoad: (() -> Void)?
+    var onRetry: (() -> Void)?
+    var onOptionSelection: ((ProductDetailOptionSelection) -> Void)?
 
     private lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
@@ -36,9 +37,7 @@ final class ProductDetailViewController: UIViewController {
         let view = ErrorView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.onHide = { [weak self] in
-            guard let self else { return }
-            self.setupLoadAdapter(slug: self.requestedSlug)
-            self.loadAdapter.loadResource()
+            self?.onRetry?()
         }
         return view
     }()
@@ -210,17 +209,9 @@ final class ProductDetailViewController: UIViewController {
     }()
 
     private var optionGroupViews: [OptionGroupView] = []
+    private var hasRenderedDetail = false
 
-    private var currentDetail: ProductDetail?
-    private var cachedDetails: [String: ProductDetail] = [:]
-    private var selectedValueIDs: [String: String] = [:]
-    private let resolver = SelectionStateResolver()
-
-    private var loadAdapter: LoadResourcePresentationAdapter<ProductDetail, ProductDetailViewController>!
-
-    init(slug: String, repository: ProductDetailRepositoryProtocol, imageLoader: ImageLoader) {
-        self.repository = repository
-        self.requestedSlug = slug
+    init(imageLoader: ImageLoader) {
         self.mediaCarouselView = MediaCarouselView()
         self.mediaCarouselViewAdapter = MediaCarouselViewAdapter(view: self.mediaCarouselView, imageLoader: imageLoader)
         super.init(nibName: nil, bundle: nil)
@@ -243,8 +234,8 @@ final class ProductDetailViewController: UIViewController {
         view.addSubview(loadingIndicator)
         view.addSubview(errorBanner)
         setupLayout()
-        setupLoadAdapter(slug: requestedSlug)
-        loadAdapter.loadResource()
+        scrollView.isHidden = true
+        onLoad?()
     }
 
     private func setupContentStack() {
@@ -320,21 +311,6 @@ final class ProductDetailViewController: UIViewController {
         return label
     }
 
-    private func setupLoadAdapter(slug: String) {
-        loadAdapter = LoadResourcePresentationAdapter(
-            loader: { [weak self] in
-                guard let self else { throw CancellationError() }
-                return try await self.repository.fetchDetail(slug: slug)
-            }
-        )
-        let presenter = LoadResourcePresenter<ProductDetail, ProductDetailViewController>(
-            resourceView: self,
-            loadingView: self,
-            errorView: self
-        )
-        loadAdapter.presenter = presenter
-    }
-
     private func applyDisplay(_ model: ProductDetailDisplayModel) {
         brandLabel.attributedText = NSAttributedString(string: model.designerName.uppercased(), attributes: [
             .kern: CGFloat(3.3),
@@ -368,86 +344,20 @@ final class ProductDetailViewController: UIViewController {
         groups.forEach { group in
             let groupView = OptionGroupView()
             groupView.render(group: group) { [weak self] valueID in
-                self?.handleOptionSelection(groupID: group.id, valueID: valueID)
+                self?.onOptionSelection?(ProductDetailOptionSelection(groupID: group.id, valueID: valueID))
             }
             optionsStack.addArrangedSubview(groupView)
             optionGroupViews.append(groupView)
         }
     }
-
-    private func handleOptionSelection(groupID: String, valueID: String) {
-        guard let detail = currentDetail else { return }
-
-        if
-            let remoteSlug = detail.remoteSelectionSlugsByGroupID[groupID]?[valueID],
-            selectedValueIDs[groupID] != valueID
-        {
-            if let cached = cachedDetails[valueID] {
-                let previousSizeID = selectedValueIDs[ProductOptionGroupID.size]
-                currentDetail = cached
-                requestedSlug = cached.slug
-                selectedValueIDs = cached.initialSelectedValues
-                if
-                    let previousSizeID,
-                    let sizeGroup = cached.optionGroups.first(where: { $0.id == ProductOptionGroupID.size }),
-                    sizeGroup.values.contains(where: { $0.id == previousSizeID && $0.isAvailable })
-                {
-                    selectedValueIDs[ProductOptionGroupID.size] = previousSizeID
-                }
-                refreshDisplay()
-                return
-            }
-
-            let previousSizeID = selectedValueIDs[ProductOptionGroupID.size]
-            requestedSlug = remoteSlug
-            setupLoadAdapter(slug: remoteSlug)
-            if let previousSizeID { preservedSizeID = previousSizeID }
-            loadAdapter.loadResource()
-            return
-        }
-
-        selectedValueIDs[groupID] = valueID
-        refreshDisplay()
-    }
-
-    private var preservedSizeID: String?
-
-    private func refreshDisplay() {
-        guard let detail = currentDetail else { return }
-        let state = resolver.resolve(
-            optionGroups: detail.optionGroups,
-            variants: detail.variants,
-            selectedValueIDs: selectedValueIDs,
-            fallbackVariantID: detail.fallbackVariantID,
-            externallySelectableValueIDsByGroupID: detail.remoteSelectionSlugsByGroupID.mapValues { Set($0.keys) }
-        )
-        let model = ProductDetailPresenter.map(detail, selectionState: state)
-        applyDisplay(model)
-    }
 }
 
-extension ProductDetailViewController: ResourceView {
-    typealias ResourceViewModel = ProductDetail
-
-    func display(_ detail: ProductDetail) {
-        cachedDetails[detail.styleColorID] = detail
-        currentDetail = detail
-        requestedSlug = detail.slug
-
-        var values = detail.initialSelectedValues
-        if
-            let preserved = preservedSizeID,
-            let sizeGroup = detail.optionGroups.first(where: { $0.id == ProductOptionGroupID.size }),
-            sizeGroup.values.contains(where: { $0.id == preserved && $0.isAvailable })
-        {
-            values[ProductOptionGroupID.size] = preserved
-        }
-        preservedSizeID = nil
-        selectedValueIDs = values
-
+extension ProductDetailViewController: ProductDetailView {
+    func display(_ viewModel: ProductDetailDisplayModel) {
+        hasRenderedDetail = true
         scrollView.isHidden = false
         errorBanner.message = nil
-        refreshDisplay()
+        applyDisplay(viewModel)
     }
 }
 
@@ -463,7 +373,7 @@ extension ProductDetailViewController: ResourceLoadingView {
 
 extension ProductDetailViewController: ResourceErrorView {
     func display(_ viewModel: ResourceErrorViewModel) {
-        if let message = viewModel.message, currentDetail == nil {
+        if let message = viewModel.message, !hasRenderedDetail {
             scrollView.isHidden = true
             errorBanner.message = "Couldn't load product: \(message)"
         } else {

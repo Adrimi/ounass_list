@@ -1,6 +1,6 @@
 # Ounass iOS Case Study
 
-This repository implements the 2024 Ounass iOS case-study brief as a UIKit application for iPhone and iPad. The delivered scope covers a paginated product listing sourced from `GET /women/clothing`, navigation into product detail screens fetched by slug from `GET /{slug}.html`, pull-to-refresh, infinite scrolling, and variant-aware product detail rendering where media, description, price, and Amber points update alongside the current selection state.
+This repository implements the 2024 Ounass iOS case-study brief as a UIKit application for iPhone and iPad. The delivered scope covers a paginated product listing sourced from `GET /women/clothing`, navigation into product detail screens fetched by slug from `GET /{slug}.html`, pull-to-refresh, infinite scrolling, and variant-aware product detail rendering where media, description, price, product ID, and Amber points update alongside the current selection state.
 
 The project is documented for reviewers rather than end users. The goal of the implementation is to satisfy the brief with maintainable, testable UIKit code while avoiding Apple MVC and leaving clear extension points for future product options beyond color and size.
 
@@ -17,14 +17,16 @@ The project is documented for reviewers rather than end users. The goal of the i
 
 The app uses a UIKit composition rooted in `RootCoordinator`, small repositories behind protocols, and generic resource-loading adapters and presenters instead of placing networking, navigation, and presentation logic directly inside view controllers.
 
-- `RootCoordinator` owns app startup and navigation flow between the product list and product detail screens.
+- `RootCoordinator` owns app startup and navigation flow between the product list and product detail screens, while dedicated UI composers assemble screen dependencies at the app edge.
+- `ProductListUIComposer` and `ProductDetailUIComposer` keep screen wiring outside controllers, following the same compositional pattern for both features.
 - `ProductListRepositoryProtocol` and `ProductDetailRepositoryProtocol` isolate remote data access from UI code.
 - `LoadResourcePresentationAdapter` manages async loading lifecycles and forwards results into `LoadResourcePresenter`.
 - `LoadResourcePresenter` maps loaded resources into display updates while coordinating loading and error states.
+- `ProductDetailPresentationAdapter` owns detail-specific state transitions such as requested slugs, in-memory detail caching, generic remote option switching, preserved selections across reloads, and mapping into `ProductDetailPresenter`.
 - `SelectionStateResolver` is the option-combination engine that determines selected values, compatible choices, displayed variants, and Add to Bag availability.
 - Product options are modeled generically with `ProductOptionGroup`, `ProductOptionValue`, and `ProductVariant`, so the selection pipeline is not hard-wired to only color and size.
 
-This structure avoids Apple MVC by keeping controllers focused on view composition and user interaction, while data fetching, navigation, mapping, and selection logic remain isolated and testable.
+This structure avoids Apple MVC by keeping controllers focused on view composition and event forwarding, while data fetching, navigation, mapping, and selection logic remain isolated and testable.
 
 ## Feature Coverage
 
@@ -34,8 +36,9 @@ This structure avoids Apple MVC by keeping controllers focused on view compositi
 - If a detail response exposes more than one size, the UI renders a size selector. If there is only one size, the selector is omitted, and an available single size is preselected.
 - If a product has no selectable options, the resolver treats the only variant as the displayed variant and enables Add to Bag immediately.
 - When color and size both exist, selecting a color constrains the set of enabled sizes to variants that remain available for that color.
-- When a color maps to a different remote slug, the screen keeps that swatch selectable, fetches the alternate detail payload on tap, and refreshes the product media, description, price, product ID, and Amber points from the newly selected variant context.
-- Previously loaded color variants are cached in memory by style-color ID so returning to a prior color can reuse the loaded detail model.
+- When an option value maps to a different remote slug, the screen keeps that value selectable, fetches the alternate detail payload on tap, and refreshes the product media, description, price, product ID, and Amber points from the newly selected variant context.
+- Previously loaded remote detail payloads are cached in memory by slug so returning to a prior remote option can reuse the loaded detail model.
+- Compatible non-remote selections are preserved across remote detail reloads when the target payload still supports them, and they gracefully fall back when the new payload no longer offers that selection.
 - The detail screen exposes the displayed variant SKU as product metadata and updates it when size or color selection changes the displayed variant.
 - The Add to Bag button reflects selection state only. The brief explicitly excludes the real Add to Bag request, and this project keeps that action out of scope.
 
@@ -45,8 +48,8 @@ The case study asked for code organization that is adaptable, maintainable, test
 
 - Dependency inversion: view composition depends on repository protocols rather than concrete fetch implementations.
 - Composition over inheritance: screens are assembled from adapters, presenters, reusable cell controllers, and focused UI views instead of deep controller hierarchies.
-- Testable presentation logic: pagination behavior, decoding, image-loading interactions, and option resolution are exercised without needing end-to-end UI automation for every scenario.
-- Extensibility: option handling is generic enough to support additional product dimensions by introducing new option groups and variants rather than rewriting the screen architecture around specific fields.
+- Testable presentation logic: pagination behavior, decoding, image-loading interactions, option resolution, presenter mapping, and detail-screen integration flows are exercised without needing end-to-end UI automation for every scenario.
+- Extensibility: option handling is generic enough to support additional product dimensions by introducing new option groups and variants, while remote option switching is driven through the generic `remoteSelectionSlugsByGroupID` contract rather than hard-coded color-only branching.
 
 ## UI / Design Direction
 
@@ -93,6 +96,8 @@ The repository includes Swift Testing-based coverage for:
 - response decoding and domain mapping
 - product list pagination and refresh behavior
 - product list image-loading and selection interactions
+- product detail presenter mapping, including displayed SKU/product ID output
+- product detail UI integration flows for initial load, retry, remote option switching, cached remote reuse, and preserved local selections across remote reloads
 - selection-state rules for size-only, color-only, mixed-option, and no-option products
 - live API integration checks against the public Ounass endpoints
 

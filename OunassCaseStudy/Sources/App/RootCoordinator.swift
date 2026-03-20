@@ -46,7 +46,7 @@ final class RootCoordinator {
     }
 
     private func showProductDetail(slug: String) {
-        let viewController = ProductDetailViewController(
+        let viewController = ProductDetailUIComposer.make(
             slug: slug,
             repository: appContainer.productDetailRepository,
             imageLoader: appContainer.imageLoader
