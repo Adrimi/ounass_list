@@ -45,7 +45,7 @@ final class ProductListUIComposer {
 
         return Paginated(
             items: products,
-            loadMore: page.pagination.nextPagePath.map { nextPath in
+            loadMore: page.nextPagePath.map { nextPath in
                 {
                     let nextPage = try await repository.fetchPage(path: nextPath)
                     return makePage(from: nextPage, accumulatedProducts: products, repository: repository)

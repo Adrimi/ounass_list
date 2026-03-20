@@ -434,8 +434,7 @@ private extension ProductListPage {
             .sample(id: "0"),
             .sample(id: "1")
         ],
-        pagination: PaginationInfo(nextPagePath: "/next", totalItems: 4, currentSet: 1, viewSize: 2),
-        noFilterPath: nil
+        nextPagePath: "/next"
     )
 
     static let secondPage = ProductListPage(
@@ -443,8 +442,7 @@ private extension ProductListPage {
             .sample(id: "2"),
             .sample(id: "3")
         ],
-        pagination: PaginationInfo(nextPagePath: nil, totalItems: 4, currentSet: 2, viewSize: 2),
-        noFilterPath: nil
+        nextPagePath: nil
     )
 
     static let secondPageWithMore = ProductListPage(
@@ -452,31 +450,27 @@ private extension ProductListPage {
             .sample(id: "2"),
             .sample(id: "3")
         ],
-        pagination: PaginationInfo(nextPagePath: "/next-2", totalItems: 6, currentSet: 2, viewSize: 2),
-        noFilterPath: nil
+        nextPagePath: "/next-2"
     )
 
     static let refreshPage = ProductListPage(
         products: [
             .sample(id: "r1")
         ],
-        pagination: PaginationInfo(nextPagePath: nil, totalItems: 1, currentSet: 1, viewSize: 1),
-        noFilterPath: nil
+        nextPagePath: nil
     )
 
     static let terminalPage = ProductListPage(
         products: [
             .sample(id: "terminal")
         ],
-        pagination: PaginationInfo(nextPagePath: nil, totalItems: 1, currentSet: 1, viewSize: 1),
-        noFilterPath: nil
+        nextPagePath: nil
     )
 
     static func make(products: [ProductSummary]) -> ProductListPage {
         ProductListPage(
             products: products,
-            pagination: PaginationInfo(nextPagePath: nil, totalItems: products.count, currentSet: 1, viewSize: products.count),
-            noFilterPath: nil
+            nextPagePath: nil
         )
     }
 }
@@ -489,8 +483,7 @@ private extension ProductSummary {
             name: "Item \(id)",
             designerName: "Designer",
             price: Money(amount: 100, currencyCode: "AED"),
-            thumbnailURL: thumbnailURL,
-            hoverImageURL: nil
+            thumbnailURL: thumbnailURL
         )
     }
 }

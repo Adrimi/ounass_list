@@ -14,8 +14,8 @@ struct SelectionStateResolverTests {
                     displayStyle: .text,
                     isRequired: true,
                     values: [
-                        ProductOptionValue(id: "s", title: "S", swatchHex: nil, previewImageURL: nil, isAvailable: true),
-                        ProductOptionValue(id: "m", title: "M", swatchHex: nil, previewImageURL: nil, isAvailable: true)
+                        ProductOptionValue(id: "s", title: "S", swatchHex: nil, isAvailable: true),
+                        ProductOptionValue(id: "m", title: "M", swatchHex: nil, isAvailable: true)
                     ]
                 )
             ],
@@ -40,8 +40,8 @@ struct SelectionStateResolverTests {
                     displayStyle: .swatch,
                     isRequired: true,
                     values: [
-                        ProductOptionValue(id: "yellow", title: "Yellow", swatchHex: "#FEE877", previewImageURL: nil, isAvailable: true),
-                        ProductOptionValue(id: "blue", title: "Blue", swatchHex: "#5E96E1", previewImageURL: nil, isAvailable: true)
+                        ProductOptionValue(id: "yellow", title: "Yellow", swatchHex: "#FEE877", isAvailable: true),
+                        ProductOptionValue(id: "blue", title: "Blue", swatchHex: "#5E96E1", isAvailable: true)
                     ]
                 )
             ],
@@ -80,8 +80,8 @@ struct SelectionStateResolverTests {
                 displayStyle: .swatch,
                 isRequired: true,
                 values: [
-                    ProductOptionValue(id: "yellow", title: "Yellow", swatchHex: "#FEE877", previewImageURL: nil, isAvailable: true),
-                    ProductOptionValue(id: "blue", title: "Blue", swatchHex: "#5E96E1", previewImageURL: nil, isAvailable: true)
+                    ProductOptionValue(id: "yellow", title: "Yellow", swatchHex: "#FEE877", isAvailable: true),
+                    ProductOptionValue(id: "blue", title: "Blue", swatchHex: "#5E96E1", isAvailable: true)
                 ]
             ),
             ProductOptionGroup(
@@ -90,8 +90,8 @@ struct SelectionStateResolverTests {
                 displayStyle: .text,
                 isRequired: true,
                 values: [
-                    ProductOptionValue(id: "s", title: "S", swatchHex: nil, previewImageURL: nil, isAvailable: true),
-                    ProductOptionValue(id: "m", title: "M", swatchHex: nil, previewImageURL: nil, isAvailable: true)
+                    ProductOptionValue(id: "s", title: "S", swatchHex: nil, isAvailable: true),
+                    ProductOptionValue(id: "m", title: "M", swatchHex: nil, isAvailable: true)
                 ]
             )
         ]

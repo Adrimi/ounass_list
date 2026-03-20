@@ -14,7 +14,6 @@ struct APIIntegrationTests {
 
     @Test func testListEndpointReturnsProducts() {
         #expect(!firstPage.products.isEmpty, "Expected at least one product")
-        #expect(firstPage.pagination.totalItems > 0)
     }
 
     @Test func testListProductFieldsArePopulated() throws {
@@ -28,15 +27,13 @@ struct APIIntegrationTests {
     }
 
     @Test func testListPaginationFieldsArePresent() {
-        #expect(firstPage.pagination.totalItems > 0)
-        #expect(firstPage.pagination.viewSize > 0)
-        #expect(firstPage.pagination.nextPagePath != nil, "First page should have a next page")
+        #expect(firstPage.nextPagePath != nil, "First page should have a next page")
     }
 
     // MARK: - Pagination
 
     @Test func testSecondPageReturnsDifferentProducts() async throws {
-        let nextPath = try #require(firstPage.pagination.nextPagePath, "First page must have a next page path")
+        let nextPath = try #require(firstPage.nextPagePath, "First page must have a next page path")
 
         let secondPage = try await listRepository.fetchPage(path: nextPath)
         #expect(!secondPage.products.isEmpty, "Second page must have products")
@@ -55,7 +52,6 @@ struct APIIntegrationTests {
         #expect(!detail.designerName.isEmpty, "designerName must not be empty")
         #expect(!detail.slug.isEmpty, "slug must not be empty")
         #expect(!detail.styleColorID.isEmpty, "styleColorID must not be empty")
-        #expect(detail.price.amount > 0, "price must be > 0")
         #expect(!detail.variants.isEmpty, "variants must not be empty")
     }
 

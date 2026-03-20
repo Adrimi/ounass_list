@@ -28,34 +28,14 @@ struct Money: Equatable, Hashable {
     }
 }
 
-struct AmberPoints: Equatable, Hashable {
-    let value: Int
-
-    var formatted: String {
-        "\(value) Amber points"
-    }
-}
-
 struct MediaAsset: Equatable, Hashable {
     let id: String
     let url: URL
 }
 
-struct PaginationInfo: Equatable {
-    let nextPagePath: String?
-    let totalItems: Int
-    let currentSet: Int
-    let viewSize: Int
-
-    var hasMorePages: Bool {
-        nextPagePath != nil
-    }
-}
-
 struct ProductListPage: Equatable {
     let products: [ProductSummary]
-    let pagination: PaginationInfo
-    let noFilterPath: String?
+    let nextPagePath: String?
 }
 
 struct ProductSummary: Equatable, Hashable {
@@ -65,7 +45,6 @@ struct ProductSummary: Equatable, Hashable {
     let designerName: String
     let price: Money
     let thumbnailURL: URL?
-    let hoverImageURL: URL?
 }
 
 enum ProductOptionDisplayStyle: Equatable, Hashable {
@@ -77,7 +56,6 @@ struct ProductOptionValue: Equatable, Hashable {
     let id: String
     let title: String
     let swatchHex: String?
-    let previewImageURL: URL?
     let isAvailable: Bool
 }
 
@@ -96,29 +74,23 @@ struct ProductVariant: Equatable {
     let description: String
     let media: [MediaAsset]
     let price: Money
-    let amberPoints: AmberPoints?
+    let amberPoints: Int?
     let isAvailable: Bool
 }
 
 struct ProductDetail: Equatable {
     let styleColorID: String
     let slug: String
-    let visibleSKU: String
     let name: String
     let designerName: String
     let description: String
-    let price: Money
-    let amberPoints: AmberPoints?
+    let amberPoints: Int?
     let media: [MediaAsset]
     let optionGroups: [ProductOptionGroup]
     let variants: [ProductVariant]
     let initialSelectedValues: [String: String]
     let fallbackVariantID: String
     let remoteSelectionSlugsByGroupID: [String: [String: String]]
-
-    var fallbackVariant: ProductVariant? {
-        variants.first(where: { $0.id == fallbackVariantID }) ?? variants.first
-    }
 }
 
 enum ProductOptionGroupID {

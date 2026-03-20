@@ -27,7 +27,6 @@ struct ProductDetailResponse: Decodable {
                 id: colorID,
                 title: option.label ?? "Color",
                 swatchHex: option.hex,
-                previewImageURL: OunassURLBuilder.websiteURL(path: option.thumbnail),
                 isAvailable: option.isInStock ?? true
             )
         }
@@ -37,7 +36,6 @@ struct ProductDetailResponse: Decodable {
                 id: String(size.sizeCodeId),
                 title: size.sizeCode,
                 swatchHex: nil,
-                previewImageURL: nil,
                 isAvailable: !(size.disabled ?? false) && (size.stock ?? 0) > 0
             )
         }
@@ -102,12 +100,10 @@ struct ProductDetailResponse: Decodable {
         return ProductDetail(
             styleColorID: pdp.styleColorId,
             slug: pdp.slug,
-            visibleSKU: pdp.visibleSku,
             name: pdp.name,
             designerName: pdp.designerCategoryName,
             description: pdp.descriptionText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "",
-            price: Money(amount: pdp.price.value, currencyCode: "AED"),
-            amberPoints: pdp.amberPoints.map(AmberPoints.init(value:)),
+            amberPoints: pdp.amberPoints,
             media: fallbackMedia,
             optionGroups: optionGroups,
             variants: variants,
@@ -124,7 +120,7 @@ struct ProductDetailResponse: Decodable {
     ) -> [ProductVariant] {
         let baseDescription = detail.descriptionText?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let basePrice = Money(amount: detail.price.value, currencyCode: "AED")
-        let amberPoints = detail.amberPoints.map(AmberPoints.init(value:))
+        let amberPoints = detail.amberPoints
         let currentColorID = selectedColorID ?? detail.styleColorId
 
         let colors = detail.colors ?? []
@@ -164,7 +160,7 @@ struct ProductDetailResponse: Decodable {
                 description: baseDescription,
                 media: media,
                 price: Money(amount: size.price?.value ?? detail.price.value, currencyCode: "AED"),
-                amberPoints: size.amberPoints.map(AmberPoints.init(value:)) ?? amberPoints,
+                amberPoints: size.amberPoints ?? amberPoints,
                 isAvailable: !(size.disabled ?? false) && (size.stock ?? 0) > 0
             )
         }

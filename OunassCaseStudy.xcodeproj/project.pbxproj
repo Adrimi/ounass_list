@@ -18,7 +18,6 @@
 		41F53330B50DFD2079C1EC3D /* ProductListViewAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36B5DAF62C6C82C70CEE5E7B /* ProductListViewAdapter.swift */; };
 		457F0E6BA070479D1361A788 /* ResourceViewProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA7E0242E7671C6FEA1F757 /* ResourceViewProtocols.swift */; };
 		460A5F4461FBCC90A018346C /* UIColor+hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954FCC6607E916AE316008DF /* UIColor+hex.swift */; };
-		4777CE5368249010DC68C292 /* ProductListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 647A4D41D924813242298A67 /* ProductListPresenter.swift */; };
 		4947A99D2CABA2992E2CA302 /* ProductDetailRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A85ACDA04A9F7B33BD5A886F /* ProductDetailRepositoryProtocol.swift */; };
 		50CECBE72496077DAFBA3E6D /* MediaCarouselCellController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F51D92151C8915ACF24725 /* MediaCarouselCellController.swift */; };
 		5259757C549CC823768EC617 /* MediaCarouselView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4C1E281556188DE9F5676B9 /* MediaCarouselView.swift */; };
@@ -110,7 +109,6 @@
 		5DF5F5B2B079F88DA4112038 /* UIView+Shimmering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Shimmering.swift"; sourceTree = "<group>"; };
 		62C78674C413F27C57CCF713 /* FlexibleDecimal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleDecimal.swift; sourceTree = "<group>"; };
 		631BE04178F3383544877CFA /* HTTPClientError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClientError.swift; sourceTree = "<group>"; };
-		647A4D41D924813242298A67 /* ProductListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListPresenter.swift; sourceTree = "<group>"; };
 		65F51D92151C8915ACF24725 /* MediaCarouselCellController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCarouselCellController.swift; sourceTree = "<group>"; };
 		68455571A7D84CFD76CA9458 /* RootCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootCoordinator.swift; sourceTree = "<group>"; };
 		695BDCB9BE14EA89BCE3CAC1 /* RemoteImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageLoader.swift; sourceTree = "<group>"; };
@@ -247,7 +245,6 @@
 			isa = PBXGroup;
 			children = (
 				798DB0A3D91EE1625CFCBF8C /* ProductListCellController.swift */,
-				647A4D41D924813242298A67 /* ProductListPresenter.swift */,
 				BCD008C52B5DF46572CB8757 /* ProductListUIComposer.swift */,
 				36B5DAF62C6C82C70CEE5E7B /* ProductListViewAdapter.swift */,
 				96B07E6A3B058C9A0A49F6B3 /* ProductListViewController.swift */,
@@ -559,7 +556,6 @@
 				733355B840EA554C0D2827F7 /* ProductListContainerResponse.swift in Sources */,
 				7389A1E8D5F41F0C8BE0663B /* ProductListHeaderView.swift in Sources */,
 				899DD2D71D6DDEE244AB59B2 /* ProductListItemResponse.swift in Sources */,
-				4777CE5368249010DC68C292 /* ProductListPresenter.swift in Sources */,
 				82E0C39014D06EF1FDB208D0 /* ProductListRepository.swift in Sources */,
 				797FCA8ED84DE6B2B3490A10 /* ProductListRepositoryProtocol.swift in Sources */,
 				D5F9FF6D5DE9309056A004D8 /* ProductListResponse.swift in Sources */,

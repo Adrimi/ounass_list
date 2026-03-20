@@ -9,8 +9,7 @@ extension ProductSummary {
             name: "GG Cotton T-shirt",
             designerName: "Gucci",
             price: Money(amount: 650, currencyCode: "AED"),
-            thumbnailURL: URL(string: "fake://preview"),
-            hoverImageURL: nil
+            thumbnailURL: URL(string: "fake://preview")
         )
     }
 }
