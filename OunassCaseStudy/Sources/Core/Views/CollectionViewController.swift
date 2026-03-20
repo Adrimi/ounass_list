@@ -74,7 +74,7 @@ final class CollectionViewController: UIViewController {
             snapshot.appendSections([section])
             snapshot.appendItems(cellControllers, toSection: section)
         }
-        dataSource.apply(snapshot, animatingDifferences: false)
+        dataSource.apply(snapshot, animatingDifferences: true)
     }
 
     @objc private func handleRefresh() {
