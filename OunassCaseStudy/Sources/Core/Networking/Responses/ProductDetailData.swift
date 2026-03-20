@@ -10,6 +10,7 @@ struct ProductDetailData: Decodable {
     let thumbnail: String?
     let media: [MediaResponse]?
     let amberPoints: Int?
+    let shouldShowSwatchOptions: Bool?
     let colors: [ColorOptionResponse]?
     let selectedColor: ColorOptionResponse?
     let sizes: [SizeOptionResponse]?

@@ -54,6 +54,53 @@ struct ProductDetailUIIntegrationTests {
         }
     }
 
+    @Test func test_selectingAlternateTextColorRequestsMappedRemoteSlug() async throws {
+        let decoder = JSONDecoder()
+        let initialDetail = try decoder.decode(ProductDetailResponse.self, from: TestFixtures.textColorDetailJSON).toDomain()
+        let obsidianDetail = makeTextColorDetail(
+            styleColorID: "218694515_11264",
+            slug: "shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_11264",
+            selectedSKU: "218695067"
+        )
+        let repository = ProductDetailRepositorySpy()
+        let sut = makeSUT(initialSlug: initialDetail.slug, repository: repository)
+
+        sut.loadViewIfNeededForTesting()
+        await waitFor {
+            repository.requestedSlugs == [initialDetail.slug]
+        }
+
+        repository.complete(with: initialDetail)
+        await waitFor {
+            sut.productIDText == "PRODUCT ID: 219166417"
+        }
+
+        let largeControl = try #require(sut.optionControl(inGroupWithTitle: "Size", at: 1))
+        let raisinControl = try #require(sut.optionControl(inGroupWithTitle: "Color", at: 1))
+        let obsidianControl = try #require(sut.optionControl(inGroupWithTitle: "Color", at: 2))
+        #expect(largeControl.isEnabled)
+        #expect(!raisinControl.isEnabled)
+        #expect(obsidianControl.isEnabled)
+
+        largeControl.sendActions(for: .touchUpInside)
+        await waitFor {
+            sut.productIDText == "PRODUCT ID: 219166438"
+        }
+
+        obsidianControl.sendActions(for: .touchUpInside)
+        await waitFor {
+            repository.requestedSlugs == [
+                initialDetail.slug,
+                obsidianDetail.slug
+            ]
+        }
+
+        repository.complete(with: obsidianDetail, at: 1)
+        await waitFor {
+            sut.productIDText == "PRODUCT ID: 218695067"
+        }
+    }
+
     @Test func test_failedRemoteColorSwitchRetriesTheRequestedAlternateSlug() async throws {
         let yellowDetail = makeColorDetail(
             styleColorID: "yellow",
@@ -301,6 +348,75 @@ struct ProductDetailUIIntegrationTests {
                 ProductOptionGroupID.color: [
                     "yellow": "shop-racil-lee-fringed-kaftan-for-women-219370859_27",
                     "blue": "shop-racil-lee-fringed-kaftan-for-women-219370859_14"
+                ]
+            ]
+        )
+    }
+
+    private func makeTextColorDetail(styleColorID: String, slug: String, selectedSKU: String) -> ProductDetail {
+        ProductDetail(
+            styleColorID: styleColorID,
+            slug: slug,
+            name: "Smooth Lounge Scoop Neck Maxi Dress",
+            designerName: "SKIMS",
+            description: "Description for \(styleColorID)",
+            amberPoints: 428,
+            media: [.sample(id: selectedSKU)],
+            optionGroups: [
+                ProductOptionGroup(
+                    id: ProductOptionGroupID.color,
+                    title: "Color",
+                    displayStyle: .text,
+                    isRequired: true,
+                    values: [
+                        ProductOptionValue(id: "218694515_16162", title: "Henna", swatchHex: "#68392C", isAvailable: true),
+                        ProductOptionValue(id: "218694515_12393", title: "Raisin", swatchHex: "#524144", isAvailable: false),
+                        ProductOptionValue(id: "218694515_11264", title: "Obsidian", swatchHex: "#3B3A3C", isAvailable: true)
+                    ]
+                ),
+                ProductOptionGroup(
+                    id: ProductOptionGroupID.size,
+                    title: "Size",
+                    displayStyle: .text,
+                    isRequired: true,
+                    values: [
+                        ProductOptionValue(id: "73", title: "XXS", swatchHex: nil, isAvailable: true),
+                        ProductOptionValue(id: "71", title: "L", swatchHex: nil, isAvailable: true)
+                    ]
+                )
+            ],
+            variants: [
+                ProductVariant(
+                    id: "218695046",
+                    sku: "218695046",
+                    optionValueIDs: [ProductOptionGroupID.color: styleColorID, ProductOptionGroupID.size: "73"],
+                    description: "Description for \(styleColorID)",
+                    media: [.sample(id: "218695046")],
+                    price: Money(amount: 450, currencyCode: "AED"),
+                    amberPoints: 428,
+                    isAvailable: true
+                ),
+                ProductVariant(
+                    id: selectedSKU,
+                    sku: selectedSKU,
+                    optionValueIDs: [ProductOptionGroupID.color: styleColorID, ProductOptionGroupID.size: "71"],
+                    description: "Description for \(styleColorID)",
+                    media: [.sample(id: selectedSKU)],
+                    price: Money(amount: 450, currencyCode: "AED"),
+                    amberPoints: 428,
+                    isAvailable: true
+                )
+            ],
+            initialSelectedValues: [
+                ProductOptionGroupID.color: styleColorID,
+                ProductOptionGroupID.size: "71"
+            ],
+            fallbackVariantID: selectedSKU,
+            remoteSelectionSlugsByGroupID: [
+                ProductOptionGroupID.color: [
+                    "218694515_16162": "shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_16162",
+                    "218694515_12393": "shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_12393",
+                    "218694515_11264": "shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_11264"
                 ]
             ]
         )

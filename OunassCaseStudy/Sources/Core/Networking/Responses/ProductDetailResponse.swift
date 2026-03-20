@@ -45,11 +45,12 @@ struct ProductDetailResponse: Decodable {
         var remoteSelectionSlugsByGroupID: [String: [String: String]] = [:]
 
         if colorValues.count > 1 {
+            let colorDisplayStyle: ProductOptionDisplayStyle = pdp.shouldShowSwatchOptions == true ? .swatch : .text
             optionGroups.append(
                 ProductOptionGroup(
                     id: ProductOptionGroupID.color,
                     title: "Color",
-                    displayStyle: .swatch,
+                    displayStyle: colorDisplayStyle,
                     isRequired: true,
                     values: colorValues
                 )

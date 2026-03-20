@@ -55,6 +55,7 @@ enum TestFixtures {
               { "src": "/2/1/219370859_yellow_fr.jpg" }
             ],
             "amberPoints": 3523,
+            "shouldShowSwatchOptions": true,
             "descriptionText": "Fringe detailing brings movement and texture.",
             "colors": [
               {
@@ -86,6 +87,68 @@ enum TestFixtures {
               { "sku": "219370871", "sizeCodeId": 72, "sizeCode": "XS", "price": 3700, "amberPoints": 3523, "disabled": false, "stock": 1 },
               { "sku": "219370882", "sizeCodeId": 75, "sizeCode": "M", "price": 3700, "amberPoints": 3523, "disabled": false, "stock": 1 },
               { "sku": "219370910", "sizeCodeId": 74, "sizeCode": "S", "price": 3700, "amberPoints": 3523, "disabled": true, "stock": 0 }
+            ],
+            "outOfStock": false
+          }
+        }
+        """.utf8
+    )
+
+    static let textColorDetailJSON = Data(
+        """
+        {
+          "pdp": {
+            "styleColorId": "218694515_16162",
+            "slug": "shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_16162",
+            "visibleSku": "219166438",
+            "name": "Smooth Lounge Scoop Neck Maxi Dress",
+            "designerCategoryName": "SKIMS",
+            "price": 450,
+            "thumbnail": "//ounass-ae.atgcdn.ae/small_light(dw=240,of=webp)/pub/media/catalog/product/2/1/218694515_henna_in.jpg?ts=1772786027.4972",
+            "media": [
+              { "src": "/2/1/218694515_henna_in.jpg?ts=1772786027.4972" },
+              { "src": "/2/1/218694515_henna_fr.jpg?ts=1772786027.4972" }
+            ],
+            "amberPoints": 428,
+            "shouldShowSwatchOptions": false,
+            "descriptionText": "SKIMS' dress is a fan favourite for a reason.",
+            "colors": [
+              {
+                "styleColorId": "218694515_16162",
+                "url": "/shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_16162.html",
+                "label": "Henna",
+                "thumbnail": "//ounass-ae.atgcdn.ae/small_light(dw=240,of=webp)/pub/media/catalog/product/2/1/218694515_henna_in.jpg?ts=1772786027.4972",
+                "hex": "#68392C",
+                "isInStock": true
+              },
+              {
+                "styleColorId": "218694515_12393",
+                "url": "/shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_12393.html",
+                "label": "Raisin",
+                "thumbnail": "//ounass-ae.atgcdn.ae/small_light(dw=240,of=webp)/pub/media/catalog/product/2/1/218694515_dpi_in.jpg?ts=1772786027.4972",
+                "hex": "#524144",
+                "isInStock": false
+              },
+              {
+                "styleColorId": "218694515_11264",
+                "url": "/shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_11264.html",
+                "label": "Obsidian",
+                "thumbnail": "//ounass-ae.atgcdn.ae/small_light(dw=240,of=webp)/pub/media/catalog/product/2/1/218694515_obsidian_in.jpg?ts=1772786027.4972",
+                "hex": "#3B3A3C",
+                "isInStock": true
+              }
+            ],
+            "selectedColor": {
+              "styleColorId": "218694515_16162",
+              "url": "/shop-skims-smooth-lounge-scoop-neck-maxi-dress-for-women-218694515_16162.html",
+              "label": "Henna",
+              "thumbnail": "//ounass-ae.atgcdn.ae/small_light(dw=240,of=webp)/pub/media/catalog/product/2/1/218694515_henna_in.jpg?ts=1772786027.4972",
+              "hex": "#68392C",
+              "isInStock": true
+            },
+            "sizes": [
+              { "sku": "219166417", "sizeCodeId": 73, "sizeCode": "XXS", "price": 450, "amberPoints": 428, "disabled": false, "stock": 4 },
+              { "sku": "219166438", "sizeCodeId": 71, "sizeCode": "L", "price": 450, "amberPoints": 428, "disabled": false, "stock": 11 }
             ],
             "outOfStock": false
           }

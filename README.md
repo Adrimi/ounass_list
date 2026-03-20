@@ -32,7 +32,7 @@ This structure avoids Apple MVC by keeping controllers focused on view compositi
 
 - The list screen requests the first page from `/women/clothing`, appends additional pages using the `nextPage` path from the pagination payload, and supports pull-to-refresh to reload from the first page.
 - Product selection from the list routes to a detail screen for that product's slug.
-- If a detail response exposes more than one color, the UI renders a swatch selector. If there is only one color, it is preselected and the selector is not shown.
+- If a detail response exposes more than one color, the UI renders a color selector. The payload's `shouldShowSwatchOptions` flag decides whether that selector appears as swatches or text chips. If there is only one color, it is preselected and the selector is not shown.
 - If a detail response exposes more than one size, the UI renders a size selector. If there is only one size, the selector is omitted, and an available single size is preselected.
 - If a product has no selectable options, the resolver treats the only variant as the displayed variant and enables Add to Bag immediately.
 - When color and size both exist, selecting a color constrains the set of enabled sizes to variants that remain available for that color.
