@@ -8,8 +8,8 @@ The project is documented for reviewers rather than end users. The goal of the i
 
 - Product listing screen with remote data loading, pull-to-refresh, and infinite scroll based on the API pagination payload.
 - Product detail screen reached from each product card by its own slug, not a hard-coded sample URL.
-- Variant selection flow for color and size, including disabled incompatible values and Add to Bag enablement only when required selections resolve to an available variant.
-- Variant-driven updates for detail content, including media, description, price, and Amber points.
+- Variant selection flow for color and size, including color selectors rendered as swatches or text chips depending on the PDP payload, disabled incompatible values, and Add to Bag enablement only when required selections resolve to an available variant.
+- Variant-driven updates for detail content, including media, description, price, product ID, and Amber points.
 - Support for products with multiple options, a single option, or no options at all.
 - Portrait and landscape support on iPhone, plus iPad compatibility as configured in the project settings.
 
@@ -66,6 +66,7 @@ The visual direction follows the "Digital Atelier" notes in `stitch/DESIGN.md` a
 - Protocol-relative image URLs such as `//...` are normalized to `https://...`.
 - Product media paths from detail payloads are resolved against the Ounass catalog media CDN.
 - The current remote client uses a `WKWebView`-backed fetcher (`WKWebFetcher`) rather than `URLSession`, and JSON is extracted from the page body text before decoding.
+- When a PDP exposes multiple colors but sets `shouldShowSwatchOptions` to `false`, the app still keeps color switching available and renders those values as text chips instead of swatches.
 - The checked-in `.xcodeproj` is the default entry point for running the app. `project.yml` exists so the project can be regenerated when needed, but regeneration is optional for normal review.
 
 ## Run and Test
@@ -83,6 +84,12 @@ The visual direction follows the "Digital Atelier" notes in `stitch/DESIGN.md` a
 2. Select the `OunassCaseStudy` scheme.
 3. Run the app on an iPhone or iPad simulator.
 
+To run the full automated suite from the command line:
+
+```bash
+xcodebuild -project OunassCaseStudy.xcodeproj -scheme OunassCaseStudy -destination 'platform=iOS Simulator,id=<SIMULATOR_ID>' test
+```
+
 If you need to regenerate the project file first:
 
 ```bash
@@ -97,7 +104,7 @@ The repository includes Swift Testing-based coverage for:
 - product list pagination and refresh behavior
 - product list image-loading and selection interactions
 - product detail presenter mapping, including displayed SKU/product ID output
-- product detail UI integration flows for initial load, retry, remote option switching, cached remote reuse, and preserved local selections across remote reloads
+- product detail UI integration flows for initial load, retry, remote option switching, text-chip color selectors, cached remote reuse, and preserved local selections across remote reloads
 - selection-state rules for size-only, color-only, mixed-option, and no-option products
 - live API integration checks against the public Ounass endpoints
 
